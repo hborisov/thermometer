@@ -23,10 +23,10 @@ Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 112 : Register in operand n
 Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 113 : Register in operand not in bank 0.  Ensure that bank bits are correct.
 Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 115 : Register in operand not in bank 0.  Ensure that bank bits are correct.
 Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 79 : Register in operand not in bank 0.  Ensure that bank bits are correct.
-Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 174 : Register in operand not in bank 0.  Ensure that bank bits are correct.
-Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 179 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 183 : Register in operand not in bank 0.  Ensure that bank bits are correct.
 Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 188 : Register in operand not in bank 0.  Ensure that bank bits are correct.
-Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 192 : Register in operand not in bank 0.  Ensure that bank bits are correct.
-Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 196 : Register in operand not in bank 0.  Ensure that bank bits are correct.
-Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 201 : Register in operand not in bank 0.  Ensure that bank bits are correct.
-Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 205 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 202 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 206 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 210 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 215 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 219 : Register in operand not in bank 0.  Ensure that bank bits are correct.

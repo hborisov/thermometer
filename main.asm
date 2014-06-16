@@ -186,6 +186,11 @@ START
      banksel TRISB
      movlw   B'00000000'
      movwf   TRISB
+     banksel PORTA
+     clrf    PORTA
+     banksel TRISA
+     movlw   B'00000000'
+     movwf   PORTA
 
      ;i2c setup
     movlw       b'00101000'
@@ -245,8 +250,11 @@ START
     movlw   h'FF'
     call    TXPOLL
 
+    banksel     PORTA
     movlw       b'00000001'
+    movwf       PORTA
     banksel     PORTB
+    movlw       b'00000111'
     movwf       PORTB
 
     banksel     byte1
@@ -266,19 +274,72 @@ START
 
     call send_address_and_register
 
-    call send_address_and_register
-
-    call send_address_and_register
-
-    call send_address_and_register
-
-
-
-    movlw       b'00000110'
+    ;movlw       b'00000110'
+    ;banksel     PORTB
+    ;movwf       PORTB
+led_loop
+    clrf        PORTA
+    clrf        PORTB
+    banksel     PORTA
+    movlw       b'00000001'
+    movwf       PORTA
     banksel     PORTB
+    movlw       b'00000110'
     movwf       PORTB
 
-    goto        $
+    clrf        PORTA
+    clrf        PORTB
+    banksel     PORTA
+    movlw       b'00000010'
+    movwf       PORTA
+    banksel     PORTB
+    movlw       b'01011011'
+    movwf       PORTB
+
+    clrf        PORTA
+    clrf        PORTB
+    banksel     PORTA
+    movlw       b'00000100'
+    movwf       PORTA
+    banksel     PORTB
+    movlw       b'01001111'
+    movwf       PORTB
+
+    clrf        PORTA
+    clrf        PORTB
+    banksel     PORTA
+    movlw       b'00001000'
+    movwf       PORTA
+    banksel     PORTB
+    movlw       b'01100110'
+    movwf       PORTB
+
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    goto        led_loop
 
     END
 
