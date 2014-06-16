@@ -10,6 +10,7 @@ CBLOCK  H'20'
     byte1
     byte2
     byte3
+    byteW
 ENDC
 
 EEWRITE
@@ -124,6 +125,21 @@ send_read_nack_i2c MACRO
     ;bsf         SSPCON2,RCEN
         endm
 
+swap_bibbles MACRO
+    banksel     byte2
+
+    swapf       byte3,1
+    movfw       byte2
+    movwf       byteW
+    swapf       byteW,1
+    movfw       byteW
+    andlw       0xF0
+    iorwf       byte3,1
+    swapf       byte2,1
+    movlw       0x0F
+    andwf       byte2,1
+        endm
+
 send_address_and_register
     start_i2c
     banksel     SSPBUF
@@ -165,6 +181,8 @@ send_address_and_register
     movwf       byte3
 
     stop_i2c
+
+    swap_bibbles
 
     banksel     byte1
     movfw       byte2
@@ -274,9 +292,7 @@ START
 
     call send_address_and_register
 
-    ;movlw       b'00000110'
-    ;banksel     PORTB
-    ;movwf       PORTB
+
 led_loop
     clrf        PORTA
     clrf        PORTB
@@ -314,31 +330,7 @@ led_loop
     movlw       b'01100110'
     movwf       PORTB
 
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
+    call send_address_and_register
     goto        led_loop
 
     END

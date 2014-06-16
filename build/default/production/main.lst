@@ -1,4 +1,4 @@
-MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-15-2014  22:40:01         PAGE  1
+MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-16-2014  21:09:38         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -26,145 +26,167 @@ Warning[205]: Found directive in column 1. (CBLOCK)
   00000020            00010     byte1
   00000021            00011     byte2
   00000022            00012     byte3
+  00000023            00013     byteW
 Warning[205]: Found directive in column 1. (ENDC)
-                      00013 ENDC
-                      00014 
-0001                  00015 EEWRITE
-0001   1283 1703      00016         banksel EEDATA
+                      00014 ENDC
+                      00015 
+0001                  00016 EEWRITE
+0001   1283 1703      00017         banksel EEDATA
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0003   008C           00017         movwf   EEDATA
-0004   1683 1703      00018         banksel EECON1
+0003   008C           00018         movwf   EEDATA
+0004   1683 1703      00019         banksel EECON1
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0006   138C           00019         bcf     EECON1, EEPGD
+0006   138C           00020         bcf     EECON1, EEPGD
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0007   150C           00020         bsf     EECON1, WREN
-                      00021 ;Required Sequence
-0008   138B           00022         bcf     INTCON, GIE
-0009   3055           00023         movlw   0x55
+0007   150C           00021         bsf     EECON1, WREN
+                      00022 ;Required Sequence
+0008   138B           00023         bcf     INTCON, GIE
+0009   3055           00024         movlw   0x55
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-000A   008D           00024         movwf   EECON2
-000B   30AA           00025         movlw   0xAA
+000A   008D           00025         movwf   EECON2
+000B   30AA           00026         movlw   0xAA
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-000C   008D           00026         movwf   EECON2
+000C   008D           00027         movwf   EECON2
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-000D   148C           00027         bsf     EECON1, WR
-000E   178B           00028         bsf     INTCON, GIE
+000D   148C           00028         bsf     EECON1, WR
+000E   178B           00029         bsf     INTCON, GIE
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-000F   188C           00029 WAIT1   btfsc   EECON1,WR
-0010   2???           00030         goto    WAIT1
+000F   188C           00030 WAIT1   btfsc   EECON1,WR
+0010   2???           00031         goto    WAIT1
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0011   110C           00031         bcf     EECON1, WREN
-0012   1283 1303      00032         banksel PIR2
-0014   120D           00033         bcf     PIR2, EEIF
-0015   1283 1703      00034         banksel EEADR
-MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-15-2014  22:40:01         PAGE  2
+0011   110C           00032         bcf     EECON1, WREN
+0012   1283 1303      00033         banksel PIR2
+0014   120D           00034         bcf     PIR2, EEIF
+MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-16-2014  21:09:38         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
+0015   1283 1703      00035         banksel EEADR
 Message[305]: Using default destination of 1 (file).
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0017   0A8D           00035         incf    EEADR
-0018   0008           00036         return
-                      00037 
-0019                  00038 TXPOLL
-0019   1283 1303      00039     banksel     PIR1
-001B   1E0C           00040     btfss       PIR1,TXIF
-001C   2???           00041     goto        TXPOLL
-001D   1283 1303      00042     banksel     TXREG
-001F   0099           00043     movwf       TXREG
-0020   0008           00044     return
-                      00045 
-0021                  00046 TXPOLL_DUMMY
-0021   1283 1303      00047     banksel     PIR1
-0023   1E0C           00048     btfss       PIR1,TXIF
-0024   2???           00049     goto        TXPOLL
-                      00050 
-0025                  00051 RXPOLL
-0025   1283 1303      00052     banksel     PIR1
-0027   1E8C           00053     btfss       PIR1,RCIF
-0028   2???           00054     goto        RXPOLL
-0029   1283 1303      00055     banksel     RCREG
-002B   081A           00056     movfw       RCREG
-002C   0008           00057     return
-                      00058 
-                      00059 start_i2c         MACRO              ;[S]
-                      00060      banksel     PIR1                                     ;bank0 (bank0? names) be sure
-                      00061      bcf         PIR1,SSPIF
-                      00062      banksel     SSPCON2                                    ;bank1
-                      00063      bsf         SSPCON2,SEN     ;send i2c START [S] bit
-                      00064      banksel     PIR1                                 ;bank0
-                      00065      btfss       PIR1,SSPIF         ;start bit cycle complete?
-                      00066      goto        $-1
-                      00067        endm
-                      00068 
+0017   0A8D           00036         incf    EEADR
+0018   0008           00037         return
+                      00038 
+0019                  00039 TXPOLL
+0019   1283 1303      00040     banksel     PIR1
+001B   1E0C           00041     btfss       PIR1,TXIF
+001C   2???           00042     goto        TXPOLL
+001D   1283 1303      00043     banksel     TXREG
+001F   0099           00044     movwf       TXREG
+0020   0008           00045     return
+                      00046 
+0021                  00047 TXPOLL_DUMMY
+0021   1283 1303      00048     banksel     PIR1
+0023   1E0C           00049     btfss       PIR1,TXIF
+0024   2???           00050     goto        TXPOLL
+                      00051 
+0025                  00052 RXPOLL
+0025   1283 1303      00053     banksel     PIR1
+0027   1E8C           00054     btfss       PIR1,RCIF
+0028   2???           00055     goto        RXPOLL
+0029   1283 1303      00056     banksel     RCREG
+002B   081A           00057     movfw       RCREG
+002C   0008           00058     return
+                      00059 
+                      00060 start_i2c         MACRO              ;[S]
+                      00061      banksel     PIR1                                     ;bank0 (bank0? names) be sure
+                      00062      bcf         PIR1,SSPIF
+                      00063      banksel     SSPCON2                                    ;bank1
+                      00064      bsf         SSPCON2,SEN     ;send i2c START [S] bit
+                      00065      banksel     PIR1                                 ;bank0
+                      00066      btfss       PIR1,SSPIF         ;start bit cycle complete?
+                      00067      goto        $-1
+                      00068        endm
                       00069 
-                      00070 repeated_start_i2c     MACRO
-                      00071      banksel        SSPCON2                                   ;bank1
-                      00072      bsf            SSPCON2,RCEN     ;enable receiving at master 16f877
-                      00073        endm
-                      00074 
-                      00075 stop_i2c         MACRO                  ;[P]
-                      00076      banksel    PIR1                                           ;bank0
-                      00077      bcf        PIR1,SSPIF
-                      00078      banksel    SSPCON2                                     ;bank1
-                      00079      bsf        SSPCON2,PEN         ;send i2c STOP [P] bit
-                      00080      banksel    PIR1                                           ;bank0
-                      00081      btfsS      PIR1,SSPIF             ;stop bit cycle completed?
-                      00082      goto         $-1
-                      00083            endm
-                      00084 
-                      00085 wait_for_ack_i2c         MACRO
-MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-15-2014  22:40:01         PAGE  3
+                      00070 
+                      00071 repeated_start_i2c     MACRO
+                      00072      banksel        SSPCON2                                   ;bank1
+                      00073      bsf            SSPCON2,RCEN     ;enable receiving at master 16f877
+                      00074        endm
+                      00075 
+                      00076 stop_i2c         MACRO                  ;[P]
+                      00077      banksel    PIR1                                           ;bank0
+                      00078      bcf        PIR1,SSPIF
+                      00079      banksel    SSPCON2                                     ;bank1
+                      00080      bsf        SSPCON2,PEN         ;send i2c STOP [P] bit
+                      00081      banksel    PIR1                                           ;bank0
+                      00082      btfsS      PIR1,SSPIF             ;stop bit cycle completed?
+                      00083      goto         $-1
+                      00084            endm
+                      00085 
+MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-16-2014  21:09:38         PAGE  3
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-                      00086      banksel        PIR1                     ;bank0
-                      00087      bcf            PIR1,SSPIF
-                      00088      btfsS          PIR1,SSPIF                 ;ACK received?
-                      00089      goto         $-1
-                      00090        endm
-                      00091 
-                      00092 read_data_i2c MACRO
-                      00093     banksel     SSPBUF
-                      00094     movfw       SSPBUF
-                      00095         endm
-                      00096 
-                      00097 read_data_i2cA MACRO
-                      00098         ;banksel     SSPCON2
-                      00099         ;bsf         SSPCON2,RCEN
-                      00100         banksel     PIR1
-                      00101     LOCAL RWaitA
-                      00102         btfss       PIR1,SSPIF
-                      00103         goto        RWaitA
-                      00104         bcf         PIR1,SSPIF
-                      00105         banksel     SSPBUF
-                      00106         movfw       SSPBUF
-                      00107         endm
-                      00108 
-                      00109 send_read_ack_i2c MACRO
-                      00110     banksel     SSPCON2
-                      00111     bcf         SSPCON2,ACKDT
-                      00112     bsf         SSPCON2,ACKEN
-                      00113     btfsc       SSPCON2,ACKEN
-                      00114     goto        $-1
-                      00115     bsf         SSPCON2,RCEN
-                      00116         endm
-                      00117 
-                      00118 send_read_nack_i2c MACRO
-                      00119     banksel     SSPCON2
-                      00120     bsf         SSPCON2,ACKDT
-                      00121     bsf         SSPCON2,ACKEN
-                      00122     btfsc       SSPCON2,ACKEN
-                      00123     goto        $-1
-                      00124     ;bsf         SSPCON2,RCEN
-                      00125         endm
-                      00126 
-002D                  00127 send_address_and_register
-                      00128     start_i2c
+                      00086 wait_for_ack_i2c         MACRO
+                      00087      banksel        PIR1                     ;bank0
+                      00088      bcf            PIR1,SSPIF
+                      00089      btfsS          PIR1,SSPIF                 ;ACK received?
+                      00090      goto         $-1
+                      00091        endm
+                      00092 
+                      00093 read_data_i2c MACRO
+                      00094     banksel     SSPBUF
+                      00095     movfw       SSPBUF
+                      00096         endm
+                      00097 
+                      00098 read_data_i2cA MACRO
+                      00099         ;banksel     SSPCON2
+                      00100         ;bsf         SSPCON2,RCEN
+                      00101         banksel     PIR1
+                      00102     LOCAL RWaitA
+                      00103         btfss       PIR1,SSPIF
+                      00104         goto        RWaitA
+                      00105         bcf         PIR1,SSPIF
+                      00106         banksel     SSPBUF
+                      00107         movfw       SSPBUF
+                      00108         endm
+                      00109 
+                      00110 send_read_ack_i2c MACRO
+                      00111     banksel     SSPCON2
+                      00112     bcf         SSPCON2,ACKDT
+                      00113     bsf         SSPCON2,ACKEN
+                      00114     btfsc       SSPCON2,ACKEN
+                      00115     goto        $-1
+                      00116     bsf         SSPCON2,RCEN
+                      00117         endm
+                      00118 
+                      00119 send_read_nack_i2c MACRO
+                      00120     banksel     SSPCON2
+                      00121     bsf         SSPCON2,ACKDT
+                      00122     bsf         SSPCON2,ACKEN
+                      00123     btfsc       SSPCON2,ACKEN
+                      00124     goto        $-1
+                      00125     ;bsf         SSPCON2,RCEN
+                      00126         endm
+                      00127 
+                      00128 swap_bibbles MACRO
+                      00129     banksel     byte2
+                      00130 
+                      00131     swapf       byte3,1
+                      00132     movfw       byte2
+                      00133     movwf       byteW
+                      00134     swapf       byteW,1
+                      00135     movfw       byteW
+                      00136     andlw       0xF0
+                      00137     iorwf       byte3,1
+                      00138     swapf       byte2,1
+MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-16-2014  21:09:38         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00139     movlw       0x0F
+                      00140     andwf       byte2,1
+                      00141         endm
+                      00142 
+002D                  00143 send_address_and_register
+                      00144     start_i2c
 002D   1283 1303          M      banksel     PIR1                                     ;bank0 (bank0? names) be sure
 002F   118C               M      bcf         PIR1,SSPIF
 0030   1683 1303          M      banksel     SSPCON2                                    ;bank1
@@ -173,29 +195,23 @@ Message[302]: Register in operand not in bank 0.  Ensure that bank bits are corr
 0033   1283 1303          M      banksel     PIR1                                 ;bank0
 0035   1D8C               M      btfss       PIR1,SSPIF         ;start bit cycle complete?
 0036   2???               M      goto        $-1
-0037   1283 1303      00129     banksel     SSPBUF
-0039   3090           00130     movlw       b'10010000'
-MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-15-2014  22:40:01         PAGE  4
-
-
-LOC  OBJECT CODE     LINE SOURCE TEXT
-  VALUE
-
-003A   0093           00131     movwf       SSPBUF
-                      00132     wait_for_ack_i2c
+0037   1283 1303      00145     banksel     SSPBUF
+0039   3090           00146     movlw       b'10010000'
+003A   0093           00147     movwf       SSPBUF
+                      00148     wait_for_ack_i2c
 003B   1283 1303          M      banksel        PIR1                     ;bank0
 003D   118C               M      bcf            PIR1,SSPIF
 003E   1D8C               M      btfsS          PIR1,SSPIF                 ;ACK received?
 003F   2???               M      goto         $-1
-0040   1283 1303      00133     banksel     SSPBUF
-0042   3001           00134     movlw       b'00000001'   ; last two bits indicate register to read 0 0 -> t reg 0 1 -> conf reg
-0043   0093           00135     movwf       SSPBUF
-                      00136     wait_for_ack_i2c
+0040   1283 1303      00149     banksel     SSPBUF
+0042   3001           00150     movlw       b'00000001'   ; last two bits indicate register to read 0 0 -> t reg 0 1 -> conf reg
+0043   0093           00151     movwf       SSPBUF
+                      00152     wait_for_ack_i2c
 0044   1283 1303          M      banksel        PIR1                     ;bank0
 0046   118C               M      bcf            PIR1,SSPIF
 0047   1D8C               M      btfsS          PIR1,SSPIF                 ;ACK received?
 0048   2???               M      goto         $-1
-                      00137     stop_i2c
+                      00153     stop_i2c
 0049   1283 1303          M      banksel    PIR1                                           ;bank0
 004B   118C               M      bcf        PIR1,SSPIF
 004C   1683 1303          M      banksel    SSPCON2                                     ;bank1
@@ -204,8 +220,8 @@ Message[302]: Register in operand not in bank 0.  Ensure that bank bits are corr
 004F   1283 1303          M      banksel    PIR1                                           ;bank0
 0051   1D8C               M      btfsS      PIR1,SSPIF             ;stop bit cycle completed?
 0052   2???               M      goto         $-1
-                      00138 
-                      00139     start_i2c
+                      00154 
+                      00155     start_i2c
 0053   1283 1303          M      banksel     PIR1                                     ;bank0 (bank0? names) be sure
 0055   118C               M      bcf         PIR1,SSPIF
 0056   1683 1303          M      banksel     SSPCON2                                    ;bank1
@@ -214,36 +230,36 @@ Message[302]: Register in operand not in bank 0.  Ensure that bank bits are corr
 0059   1283 1303          M      banksel     PIR1                                 ;bank0
 005B   1D8C               M      btfss       PIR1,SSPIF         ;start bit cycle complete?
 005C   2???               M      goto        $-1
-005D   1283 1303      00140     banksel     SSPBUF
-005F   3091           00141     movlw       b'10010001'
-0060   0093           00142     movwf       SSPBUF
-                      00143     wait_for_ack_i2c
+005D   1283 1303      00156     banksel     SSPBUF
+005F   3091           00157     movlw       b'10010001'
+0060   0093           00158     movwf       SSPBUF
+                      00159     wait_for_ack_i2c
+MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-16-2014  21:09:38         PAGE  5
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
 0061   1283 1303          M      banksel        PIR1                     ;bank0
 0063   118C               M      bcf            PIR1,SSPIF
 0064   1D8C               M      btfsS          PIR1,SSPIF                 ;ACK received?
 0065   2???               M      goto         $-1
-                      00144     repeated_start_i2c
+                      00160     repeated_start_i2c
 0066   1683 1303          M      banksel        SSPCON2                                   ;bank1
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
 0068   1591               M      bsf            SSPCON2,RCEN     ;enable receiving at master 16f877
-                      00145 
-                      00146     read_data_i2cA
+                      00161 
+                      00162     read_data_i2cA
                           M         ;banksel     SSPCON2
                           M         ;bsf         SSPCON2,RCEN
 0069   1283 1303          M         banksel     PIR1
   0000                    M     LOCAL RWaitA
 006B   1D8C               M         btfss       PIR1,SSPIF
 006C   2800               M         goto        RWaitA
-MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-15-2014  22:40:01         PAGE  5
-
-
-LOC  OBJECT CODE     LINE SOURCE TEXT
-  VALUE
-
 006D   118C               M         bcf         PIR1,SSPIF
 006E   1283 1303          M         banksel     SSPBUF
 0070   0813               M         movfw       SSPBUF
-                      00147     send_read_ack_i2c
+                      00163     send_read_ack_i2c
 0071   1683 1303          M     banksel     SSPCON2
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
 0073   1291               M     bcf         SSPCON2,ACKDT
@@ -254,12 +270,12 @@ Message[302]: Register in operand not in bank 0.  Ensure that bank bits are corr
 0076   2???               M     goto        $-1
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
 0077   1591               M     bsf         SSPCON2,RCEN
-                      00148 
-0078   2???           00149     call        TXPOLL
-0079   1283 1303      00150     banksel     byte1
-007B   00A0           00151     movwf       byte1
-                      00152 
-                      00153     read_data_i2cA
+                      00164 
+0078   2???           00165     call        TXPOLL
+0079   1283 1303      00166     banksel     byte1
+007B   00A0           00167     movwf       byte1
+                      00168 
+                      00169     read_data_i2cA
                           M         ;banksel     SSPCON2
                           M         ;bsf         SSPCON2,RCEN
 007C   1283 1303          M         banksel     PIR1
@@ -269,7 +285,7 @@ Message[302]: Register in operand not in bank 0.  Ensure that bank bits are corr
 0080   118C               M         bcf         PIR1,SSPIF
 0081   1283 1303          M         banksel     SSPBUF
 0083   0813               M         movfw       SSPBUF
-                      00154     send_read_ack_i2c
+                      00170     send_read_ack_i2c
 0084   1683 1303          M     banksel     SSPCON2
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
 0086   1291               M     bcf         SSPCON2,ACKDT
@@ -277,28 +293,28 @@ Message[302]: Register in operand not in bank 0.  Ensure that bank bits are corr
 0087   1611               M     bsf         SSPCON2,ACKEN
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
 0088   1A11               M     btfsc       SSPCON2,ACKEN
-0089   2???               M     goto        $-1
-Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-008A   1591               M     bsf         SSPCON2,RCEN
-                      00155 
-008B   2???           00156     call        TXPOLL
-008C   1283 1303      00157     banksel     byte2
-008E   00A1           00158     movwf       byte2
-                      00159 
-008F   1283 1303      00160     banksel     SSPBUF
-0091   0813           00161     movfw       SSPBUF
-                      00162 
-0092   2???           00163     call        TXPOLL
-0093   1283 1303      00164     banksel     byte3
-0095   00A2           00165     movwf       byte3
-                      00166 
-                      00167     stop_i2c
-MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-15-2014  22:40:01         PAGE  6
+MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-16-2014  21:09:38         PAGE  6
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
+0089   2???               M     goto        $-1
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+008A   1591               M     bsf         SSPCON2,RCEN
+                      00171 
+008B   2???           00172     call        TXPOLL
+008C   1283 1303      00173     banksel     byte2
+008E   00A1           00174     movwf       byte2
+                      00175 
+008F   1283 1303      00176     banksel     SSPBUF
+0091   0813           00177     movfw       SSPBUF
+                      00178 
+0092   2???           00179     call        TXPOLL
+0093   1283 1303      00180     banksel     byte3
+0095   00A2           00181     movwf       byte3
+                      00182 
+                      00183     stop_i2c
 0096   1283 1303          M      banksel    PIR1                                           ;bank0
 0098   118C               M      bcf        PIR1,SSPIF
 0099   1683 1303          M      banksel    SSPCON2                                     ;bank1
@@ -307,184 +323,197 @@ Message[302]: Register in operand not in bank 0.  Ensure that bank bits are corr
 009C   1283 1303          M      banksel    PIR1                                           ;bank0
 009E   1D8C               M      btfsS      PIR1,SSPIF             ;stop bit cycle completed?
 009F   2???               M      goto         $-1
-                      00168 
-00A0   1283 1303      00169     banksel     byte1
-00A2   0821           00170     movfw       byte2
-00A3   2???           00171     call        TXPOLL
-00A4   0822           00172     movfw       byte3
-00A5   2???           00173     call        TXPOLL
-00A6   0008           00174         return
-                      00175 
-                      00176 
-                      00177 
-                      00178 MAIN_PROG CODE                      ; let linker place main program
-0000                  00179 START
-                      00180 
-0000   1683 1303      00181      banksel OPTION_REG
-0002   30D7           00182      movlw   B'11010111'
-Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0003   0081           00183      movwf   OPTION_REG
-0004   1283 1303      00184      banksel PORTB
-0006   0186           00185      clrf    PORTB
-0007   1683 1303      00186      banksel TRISB
-0009   3000           00187      movlw   B'00000000'
-Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-000A   0086           00188      movwf   TRISB
-000B   1283 1303      00189      banksel PORTA
-000D   0185           00190      clrf    PORTA
-000E   1683 1303      00191      banksel TRISA
-0010   3000           00192      movlw   B'00000000'
-0011   0085           00193      movwf   PORTA
+                      00184 
+                      00185     swap_bibbles
+00A0   1283 1303          M     banksel     byte2
+                          M 
+00A2   0EA2               M     swapf       byte3,1
+00A3   0821               M     movfw       byte2
+00A4   00A3               M     movwf       byteW
+00A5   0EA3               M     swapf       byteW,1
+00A6   0823               M     movfw       byteW
+00A7   39F0               M     andlw       0xF0
+00A8   04A2               M     iorwf       byte3,1
+00A9   0EA1               M     swapf       byte2,1
+00AA   300F               M     movlw       0x0F
+00AB   05A1               M     andwf       byte2,1
+                      00186 
+00AC   1283 1303      00187     banksel     byte1
+00AE   0821           00188     movfw       byte2
+00AF   2???           00189     call        TXPOLL
+00B0   0822           00190     movfw       byte3
+00B1   2???           00191     call        TXPOLL
+00B2   0008           00192         return
+                      00193 
                       00194 
-                      00195      ;i2c setup
-0012   3028           00196     movlw       b'00101000'
-0013   1283 1303      00197     banksel     SSPCON
-0015   0094           00198     movwf       SSPCON
-                      00199 
-0016   3009           00200     movlw       D'9'
-0017   1683 1303      00201     banksel     SSPADD
-Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0019   0093           00202     movwf       SSPADD
-                      00203 
-001A   3080           00204     movlw       b'10000000'
-001B   1683 1303      00205     banksel     SSPSTAT
-Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-001D   0094           00206     movwf       SSPSTAT
-                      00207 
-001E   30D8           00208     movlw       b'11011000'   ;usart and i2c set
-MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-15-2014  22:40:01         PAGE  7
+                      00195 
+                      00196 MAIN_PROG CODE                      ; let linker place main program
+0000                  00197 START
+                      00198 
+0000   1683 1303      00199      banksel OPTION_REG
+0002   30D7           00200      movlw   B'11010111'
+MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-16-2014  21:09:38         PAGE  7
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-001F   1683 1303      00209     banksel     TRISC
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0021   0087           00210     movwf       TRISC
-                      00211 
-                      00212     ;serial setup
-0022   1683 1303      00213     banksel     SPBRG
-0024   3019           00214     movlw       D'25'
+0003   0081           00201      movwf   OPTION_REG
+0004   1283 1303      00202      banksel PORTB
+0006   0186           00203      clrf    PORTB
+0007   1683 1303      00204      banksel TRISB
+0009   3000           00205      movlw   B'00000000'
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0025   0099           00215     movwf       SPBRG
-                      00216 
-0026   1683 1303      00217     banksel     TXSTA
-0028   3024           00218     movlw       b'00100100'
+000A   0086           00206      movwf   TRISB
+000B   1283 1303      00207      banksel PORTA
+000D   0185           00208      clrf    PORTA
+000E   1683 1303      00209      banksel TRISA
+0010   3000           00210      movlw   B'00000000'
+0011   0085           00211      movwf   PORTA
+                      00212 
+                      00213      ;i2c setup
+0012   3028           00214     movlw       b'00101000'
+0013   1283 1303      00215     banksel     SSPCON
+0015   0094           00216     movwf       SSPCON
+                      00217 
+0016   3009           00218     movlw       D'9'
+0017   1683 1303      00219     banksel     SSPADD
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
-0029   0098           00219     movwf       TXSTA
-                      00220 
-002A   1283 1303      00221     banksel     RCSTA
-002C   3090           00222     movlw       b'10010000'
-002D   0098           00223     movwf       RCSTA
-                      00224 
-                      00225     ;begin
-                      00226 
-002E   30AA           00227     movlw   h'AA'
-002F   2???           00228     call    TXPOLL
-0030   30BB           00229     movlw   h'BB'
-0031   2???           00230     call    TXPOLL
-0032   30CC           00231     movlw   h'CC'
-0033   2???           00232     call    TXPOLL
-0034   30DD           00233     movlw   h'DD'
-0035   2???           00234     call    TXPOLL
-0036   30EE           00235     movlw   h'EE'
-0037   2???           00236     call    TXPOLL
-0038   30FF           00237     movlw   h'FF'
-0039   2???           00238     call    TXPOLL
-                      00239 
-003A   30AA           00240     movlw   h'AA'
-003B   2???           00241     call    TXPOLL
-003C   30BB           00242     movlw   h'BB'
-003D   2???           00243     call    TXPOLL
-003E   30CC           00244     movlw   h'CC'
-003F   2???           00245     call    TXPOLL
-0040   30DD           00246     movlw   h'DD'
-0041   2???           00247     call    TXPOLL
-0042   30EE           00248     movlw   h'EE'
-0043   2???           00249     call    TXPOLL
-0044   30FF           00250     movlw   h'FF'
-0045   2???           00251     call    TXPOLL
-                      00252 
-0046   1283 1303      00253     banksel     PORTA
-0048   3001           00254     movlw       b'00000001'
-0049   0085           00255     movwf       PORTA
-004A   1283 1303      00256     banksel     PORTB
-004C   3007           00257     movlw       b'00000111'
-004D   0086           00258     movwf       PORTB
-MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-15-2014  22:40:01         PAGE  8
+0019   0093           00220     movwf       SSPADD
+                      00221 
+001A   3080           00222     movlw       b'10000000'
+001B   1683 1303      00223     banksel     SSPSTAT
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+001D   0094           00224     movwf       SSPSTAT
+                      00225 
+001E   30D8           00226     movlw       b'11011000'   ;usart and i2c set
+001F   1683 1303      00227     banksel     TRISC
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0021   0087           00228     movwf       TRISC
+                      00229 
+                      00230     ;serial setup
+0022   1683 1303      00231     banksel     SPBRG
+0024   3019           00232     movlw       D'25'
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0025   0099           00233     movwf       SPBRG
+                      00234 
+0026   1683 1303      00235     banksel     TXSTA
+0028   3024           00236     movlw       b'00100100'
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0029   0098           00237     movwf       TXSTA
+                      00238 
+002A   1283 1303      00239     banksel     RCSTA
+002C   3090           00240     movlw       b'10010000'
+002D   0098           00241     movwf       RCSTA
+                      00242 
+                      00243     ;begin
+                      00244 
+002E   30AA           00245     movlw   h'AA'
+002F   2???           00246     call    TXPOLL
+MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-16-2014  21:09:38         PAGE  8
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-                      00259 
-004E   1283 1303      00260     banksel     byte1
-0050   30FF           00261     movlw       b'11111111'
-0051   00A0           00262     movwf       byte1
-0052   00A1           00263     movwf       byte2
-0053   00A2           00264     movwf       byte3
-                      00265 
-0054   0820           00266     movfw       byte1
-0055   2???           00267     call        TXPOLL
-0056   0821           00268     movfw       byte2
-0057   2???           00269     call        TXPOLL
-0058   0822           00270     movfw       byte3
-0059   2???           00271     call        TXPOLL
-                      00272 
-                      00273 
-                      00274 
-005A   2???           00275     call send_address_and_register
-                      00276 
-                      00277     ;movlw       b'00000110'
-                      00278     ;banksel     PORTB
-                      00279     ;movwf       PORTB
-005B                  00280 led_loop
-005B   0185           00281     clrf        PORTA
-005C   0186           00282     clrf        PORTB
-005D   1283 1303      00283     banksel     PORTA
-005F   3001           00284     movlw       b'00000001'
-0060   0085           00285     movwf       PORTA
-0061   1283 1303      00286     banksel     PORTB
-0063   3006           00287     movlw       b'00000110'
-0064   0086           00288     movwf       PORTB
-                      00289 
-0065   0185           00290     clrf        PORTA
-0066   0186           00291     clrf        PORTB
-0067   1283 1303      00292     banksel     PORTA
-0069   3002           00293     movlw       b'00000010'
-006A   0085           00294     movwf       PORTA
-006B   1283 1303      00295     banksel     PORTB
-006D   305B           00296     movlw       b'01011011'
-006E   0086           00297     movwf       PORTB
-                      00298 
-006F   0185           00299     clrf        PORTA
-0070   0186           00300     clrf        PORTB
-0071   1283 1303      00301     banksel     PORTA
-0073   3004           00302     movlw       b'00000100'
-0074   0085           00303     movwf       PORTA
-0075   1283 1303      00304     banksel     PORTB
-0077   304F           00305     movlw       b'01001111'
-0078   0086           00306     movwf       PORTB
-                      00307 
-0079   0185           00308     clrf        PORTA
-007A   0186           00309     clrf        PORTB
-007B   1283 1303      00310     banksel     PORTA
-007D   3008           00311     movlw       b'00001000'
-MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-15-2014  22:40:01         PAGE  9
+0030   30BB           00247     movlw   h'BB'
+0031   2???           00248     call    TXPOLL
+0032   30CC           00249     movlw   h'CC'
+0033   2???           00250     call    TXPOLL
+0034   30DD           00251     movlw   h'DD'
+0035   2???           00252     call    TXPOLL
+0036   30EE           00253     movlw   h'EE'
+0037   2???           00254     call    TXPOLL
+0038   30FF           00255     movlw   h'FF'
+0039   2???           00256     call    TXPOLL
+                      00257 
+003A   30AA           00258     movlw   h'AA'
+003B   2???           00259     call    TXPOLL
+003C   30BB           00260     movlw   h'BB'
+003D   2???           00261     call    TXPOLL
+003E   30CC           00262     movlw   h'CC'
+003F   2???           00263     call    TXPOLL
+0040   30DD           00264     movlw   h'DD'
+0041   2???           00265     call    TXPOLL
+0042   30EE           00266     movlw   h'EE'
+0043   2???           00267     call    TXPOLL
+0044   30FF           00268     movlw   h'FF'
+0045   2???           00269     call    TXPOLL
+                      00270 
+0046   1283 1303      00271     banksel     PORTA
+0048   3001           00272     movlw       b'00000001'
+0049   0085           00273     movwf       PORTA
+004A   1283 1303      00274     banksel     PORTB
+004C   3007           00275     movlw       b'00000111'
+004D   0086           00276     movwf       PORTB
+                      00277 
+004E   1283 1303      00278     banksel     byte1
+0050   30FF           00279     movlw       b'11111111'
+0051   00A0           00280     movwf       byte1
+0052   00A1           00281     movwf       byte2
+0053   00A2           00282     movwf       byte3
+                      00283 
+0054   0820           00284     movfw       byte1
+0055   2???           00285     call        TXPOLL
+0056   0821           00286     movfw       byte2
+0057   2???           00287     call        TXPOLL
+0058   0822           00288     movfw       byte3
+0059   2???           00289     call        TXPOLL
+                      00290 
+                      00291 
+                      00292 
+005A   2???           00293     call send_address_and_register
+                      00294 
+                      00295 
+005B                  00296 led_loop
+005B   0185           00297     clrf        PORTA
+005C   0186           00298     clrf        PORTB
+005D   1283 1303      00299     banksel     PORTA
+MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-16-2014  21:09:38         PAGE  9
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-007E   0085           00312     movwf       PORTA
-007F   1283 1303      00313     banksel     PORTB
-0081   3066           00314     movlw       b'01100110'
-0082   0086           00315     movwf       PORTB
-                      00316     
-0083   2???           00317     goto        led_loop
-                      00318 
-3F79                  00319     END
-MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-15-2014  22:40:01         PAGE 10
+005F   3001           00300     movlw       b'00000001'
+0060   0085           00301     movwf       PORTA
+0061   1283 1303      00302     banksel     PORTB
+0063   3006           00303     movlw       b'00000110'
+0064   0086           00304     movwf       PORTB
+                      00305 
+0065   0185           00306     clrf        PORTA
+0066   0186           00307     clrf        PORTB
+0067   1283 1303      00308     banksel     PORTA
+0069   3002           00309     movlw       b'00000010'
+006A   0085           00310     movwf       PORTA
+006B   1283 1303      00311     banksel     PORTB
+006D   305B           00312     movlw       b'01011011'
+006E   0086           00313     movwf       PORTB
+                      00314 
+006F   0185           00315     clrf        PORTA
+0070   0186           00316     clrf        PORTB
+0071   1283 1303      00317     banksel     PORTA
+0073   3004           00318     movlw       b'00000100'
+0074   0085           00319     movwf       PORTA
+0075   1283 1303      00320     banksel     PORTB
+0077   304F           00321     movlw       b'01001111'
+0078   0086           00322     movwf       PORTB
+                      00323 
+0079   0185           00324     clrf        PORTA
+007A   0186           00325     clrf        PORTB
+007B   1283 1303      00326     banksel     PORTA
+007D   3008           00327     movlw       b'00001000'
+007E   0085           00328     movwf       PORTA
+007F   1283 1303      00329     banksel     PORTB
+0081   3066           00330     movlw       b'01100110'
+0082   0086           00331     movwf       PORTB
+                      00332 
+0083   2???           00333     call send_address_and_register
+0084   2???           00334     goto        led_loop
+                      00335 
+3F79                  00336     END
+MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-16-2014  21:09:38         PAGE 10
 
 
 SYMBOL TABLE
@@ -543,7 +572,7 @@ CHS1                              00000004
 CHS2                              00000005
 CIS                               00000003
 CKE                               00000006
-MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-15-2014  22:40:01         PAGE 11
+MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-16-2014  21:09:38         PAGE 11
 
 
 SYMBOL TABLE
@@ -602,7 +631,7 @@ INTEDG                            00000006
 INTF                              00000001
 IRP                               00000007
 NOT_A                             00000005
-MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-15-2014  22:40:01         PAGE 12
+MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-16-2014  21:09:38         PAGE 12
 
 
 SYMBOL TABLE
@@ -661,7 +690,7 @@ RA5                               00000005
 RB0                               00000000
 RB1                               00000001
 RB2                               00000002
-MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-15-2014  22:40:01         PAGE 13
+MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-16-2014  21:09:38         PAGE 13
 
 
 SYMBOL TABLE
@@ -720,7 +749,7 @@ SREN                              00000005
 SSPADD                            00000093
 SSPBUF                            00000013
 SSPCON                            00000014
-MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-15-2014  22:40:01         PAGE 14
+MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-16-2014  21:09:38         PAGE 14
 
 
 SYMBOL TABLE
@@ -779,7 +808,7 @@ TRISA4                            00000004
 TRISA5                            00000005
 TRISB                             00000086
 TRISB0                            00000000
-MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-15-2014  22:40:01         PAGE 15
+MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-16-2014  21:09:38         PAGE 15
 
 
 SYMBOL TABLE
@@ -838,7 +867,7 @@ _.org_0_0036                      00000036
 _.org_0_003F                      0000003F
 _.org_0_0048                      00000048
 _.org_0_0052                      00000052
-MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-15-2014  22:40:01         PAGE 16
+MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-16-2014  21:09:38         PAGE 16
 
 
 SYMBOL TABLE
@@ -890,21 +919,23 @@ __16F877A                         00000001
 byte1                             00000020
 byte2                             00000021
 byte3                             00000022
+byteW                             00000023
 led_loop                          0000005B
 read_data_i2c                     
 read_data_i2cA                    
 repeated_start_i2c                
 send_address_and_register         0000002D
 send_read_ack_i2c                 
-send_read_nack_i2c                
-MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-15-2014  22:40:01         PAGE 17
+MPASM 5.56  /HOME/HBB/MPLABXPROJECTS/I2C.X/M   6-16-2014  21:09:38         PAGE 17
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+send_read_nack_i2c                
 start_i2c                         
 stop_i2c                          
+swap_bibbles                      
 wait_for_ack_i2c                  
 
 Errors   :     0

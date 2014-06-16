@@ -1,32 +1,32 @@
 Warning[205] /home/hbb/MPLABXProjects/i2c.X/main.asm 9 : Found directive in column 1. (CBLOCK)
-Warning[205] /home/hbb/MPLABXProjects/i2c.X/main.asm 13 : Found directive in column 1. (ENDC)
-Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 17 : Register in operand not in bank 0.  Ensure that bank bits are correct.
-Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 19 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Warning[205] /home/hbb/MPLABXProjects/i2c.X/main.asm 14 : Found directive in column 1. (ENDC)
+Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 18 : Register in operand not in bank 0.  Ensure that bank bits are correct.
 Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 20 : Register in operand not in bank 0.  Ensure that bank bits are correct.
-Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 24 : Register in operand not in bank 0.  Ensure that bank bits are correct.
-Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 26 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 21 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 25 : Register in operand not in bank 0.  Ensure that bank bits are correct.
 Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 27 : Register in operand not in bank 0.  Ensure that bank bits are correct.
-Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 29 : Register in operand not in bank 0.  Ensure that bank bits are correct.
-Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 31 : Register in operand not in bank 0.  Ensure that bank bits are correct.
-Message[305] /home/hbb/MPLABXProjects/i2c.X/main.asm 35 : Using default destination of 1 (file).
-Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 35 : Register in operand not in bank 0.  Ensure that bank bits are correct.
-Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 63 : Register in operand not in bank 0.  Ensure that bank bits are correct.
-Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 79 : Register in operand not in bank 0.  Ensure that bank bits are correct.
-Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 63 : Register in operand not in bank 0.  Ensure that bank bits are correct.
-Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 72 : Register in operand not in bank 0.  Ensure that bank bits are correct.
-Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 111 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 28 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 30 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 32 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[305] /home/hbb/MPLABXProjects/i2c.X/main.asm 36 : Using default destination of 1 (file).
+Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 36 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 64 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 80 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 64 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 73 : Register in operand not in bank 0.  Ensure that bank bits are correct.
 Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 112 : Register in operand not in bank 0.  Ensure that bank bits are correct.
 Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 113 : Register in operand not in bank 0.  Ensure that bank bits are correct.
-Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 115 : Register in operand not in bank 0.  Ensure that bank bits are correct.
-Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 111 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 114 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 116 : Register in operand not in bank 0.  Ensure that bank bits are correct.
 Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 112 : Register in operand not in bank 0.  Ensure that bank bits are correct.
 Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 113 : Register in operand not in bank 0.  Ensure that bank bits are correct.
-Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 115 : Register in operand not in bank 0.  Ensure that bank bits are correct.
-Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 79 : Register in operand not in bank 0.  Ensure that bank bits are correct.
-Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 183 : Register in operand not in bank 0.  Ensure that bank bits are correct.
-Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 188 : Register in operand not in bank 0.  Ensure that bank bits are correct.
-Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 202 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 114 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 116 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 80 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 201 : Register in operand not in bank 0.  Ensure that bank bits are correct.
 Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 206 : Register in operand not in bank 0.  Ensure that bank bits are correct.
-Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 210 : Register in operand not in bank 0.  Ensure that bank bits are correct.
-Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 215 : Register in operand not in bank 0.  Ensure that bank bits are correct.
-Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 219 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 220 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 224 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 228 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 233 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/hbb/MPLABXProjects/i2c.X/main.asm 237 : Register in operand not in bank 0.  Ensure that bank bits are correct.

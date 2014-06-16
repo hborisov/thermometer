@@ -1,12 +1,12 @@
 MPLINK 5.02, LINKER
-Linker Map File - Created Sun Jun 15 22:40:02 2014
+Linker Map File - Created Mon Jun 16 21:09:39 2014
 
                                  Section Info
                   Section       Type    Address   Location Size(Bytes)
                 ---------  ---------  ---------  ---------  ---------
-                   .org_0       code   0x000000    program   0x00014e
-                   .cinit    romdata   0x0000a7    program   0x000004
-                MAIN_PROG       code   0x0000a9    program   0x000108
+                   .org_0       code   0x000000    program   0x000166
+                   .cinit    romdata   0x0000b3    program   0x000004
+                MAIN_PROG       code   0x0000b5    program   0x00010a
 .config_2007_BUILD/DEFAULT/PRODUCTION/MAIN.O       code   0x002007    program   0x000002
 
 
@@ -14,9 +14,9 @@ Linker Map File - Created Sun Jun 15 22:40:02 2014
                               Program Memory Usage 
                                Start         End      
                            ---------   ---------      
-                            0x000000    0x00012c      
+                            0x000000    0x000139      
                             0x002007    0x002007      
-            302 out of 8454 program addresses used, program memory utilization is 3%
+            315 out of 8454 program addresses used, program memory utilization is 3%
 
 
 
@@ -25,7 +25,7 @@ Linker Map File - Created Sun Jun 15 22:40:02 2014
                 ---------  ---------  ---------  --------- ---------                
                   EEWRITE   0x000001    program     static /home/hbb/MPLABXProjects/i2c.X/main.asm
                    RXPOLL   0x000025    program     static /home/hbb/MPLABXProjects/i2c.X/main.asm
-                    START   0x0000a9    program     static /home/hbb/MPLABXProjects/i2c.X/main.asm
+                    START   0x0000b5    program     static /home/hbb/MPLABXProjects/i2c.X/main.asm
                    TXPOLL   0x000019    program     static /home/hbb/MPLABXProjects/i2c.X/main.asm
              TXPOLL_DUMMY   0x000021    program     static /home/hbb/MPLABXProjects/i2c.X/main.asm
                     WAIT1   0x00000f    program     static /home/hbb/MPLABXProjects/i2c.X/main.asm
@@ -38,7 +38,7 @@ Linker Map File - Created Sun Jun 15 22:40:02 2014
              _.org_0_0076   0x000076    program     static /home/hbb/MPLABXProjects/i2c.X/main.asm
              _.org_0_0089   0x000089    program     static /home/hbb/MPLABXProjects/i2c.X/main.asm
              _.org_0_009F   0x00009f    program     static /home/hbb/MPLABXProjects/i2c.X/main.asm
-                 led_loop   0x000104    program     static /home/hbb/MPLABXProjects/i2c.X/main.asm
+                 led_loop   0x000110    program     static /home/hbb/MPLABXProjects/i2c.X/main.asm
 send_address_and_register   0x00002d    program     static /home/hbb/MPLABXProjects/i2c.X/main.asm
 
 
@@ -61,7 +61,7 @@ send_address_and_register   0x00002d    program     static /home/hbb/MPLABXProje
              _.org_0_0076   0x000076    program     static /home/hbb/MPLABXProjects/i2c.X/main.asm
              _.org_0_0089   0x000089    program     static /home/hbb/MPLABXProjects/i2c.X/main.asm
              _.org_0_009F   0x00009f    program     static /home/hbb/MPLABXProjects/i2c.X/main.asm
-                    START   0x0000a9    program     static /home/hbb/MPLABXProjects/i2c.X/main.asm
-                 led_loop   0x000104    program     static /home/hbb/MPLABXProjects/i2c.X/main.asm
+                    START   0x0000b5    program     static /home/hbb/MPLABXProjects/i2c.X/main.asm
+                 led_loop   0x000110    program     static /home/hbb/MPLABXProjects/i2c.X/main.asm
 
 
