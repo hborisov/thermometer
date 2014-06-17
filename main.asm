@@ -163,12 +163,32 @@ send_address_and_register
     send_read_ack_i2c
 
     call        TXPOLL
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
     banksel     byte1
     movwf       byte1
 
     read_data_i2cA
     send_read_ack_i2c
 
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
     call        TXPOLL
     banksel     byte2
     movwf       byte2
@@ -176,6 +196,16 @@ send_address_and_register
     banksel     SSPBUF
     movfw       SSPBUF
 
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
     call        TXPOLL
     banksel     byte3
     movwf       byte3
@@ -290,7 +320,7 @@ START
 
 
 
-    call send_address_and_register
+    ;call send_address_and_register
 
 
 led_loop
