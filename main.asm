@@ -1,17 +1,20 @@
-    list    p=16f877a
-    #include "p16f877a.inc"
+    LIST    P = 16F877A
+    INCLUDE <p16f877a.inc>
+    INCLUDE <DEV_FAM.INC>	; PIC16 device specific definitions
+	INCLUDE <MATH16.INC>    ; PIC16 math library definitions
+
 
     __CONFIG _FOSC_XT & _WDTE_OFF & _PWRTE_OFF & _BOREN_ON & _LVP_OFF & _CPD_OFF & _WRT_OFF & _CP_OFF
 
     ORG     H'0000'
         goto    START
 
-CBLOCK  H'20'
-    byte1
-    byte2
-    byte3
-    byteW
-ENDC
+    CBLOCK  H'7A'
+        byte1
+        byte2
+        byte3
+        byteW
+    ENDC
 
 EEWRITE
         banksel EEDATA
@@ -298,6 +301,35 @@ START
     movlw   h'FF'
     call    TXPOLL
 
+    movlw   0x06
+    movwf   AARGB0
+    movlw   0x0A
+    movwf   AARGB1
+    call    FLO1624
+
+    movfw   AEXP
+    call    TXPOLL
+    movfw   AARGB0
+    call    TXPOLL
+    movfw   AARGB1
+    call    TXPOLL
+
+    movlw   0x7B
+    movwf   BEXP
+    movlw   0x00
+    movwf   BARGB0
+    movwf   BARGB1
+
+    call    FPM24
+    call    TXPOLL
+
+    movfw   AEXP
+    call    TXPOLL
+    movfw   AARGB0
+    call    TXPOLL
+    movfw   AARGB1
+    call    TXPOLL
+
     banksel     PORTA
     movlw       b'00000001'
     movwf       PORTA
@@ -362,6 +394,8 @@ led_loop
 
     call send_address_and_register
     goto        led_loop
+
+    INCLUDE <FP24.A16>
 
     END
 
