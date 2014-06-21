@@ -3,41 +3,149 @@
     INCLUDE <DEV_FAM.INC>	; PIC16 device specific definitions
 	INCLUDE <MATH16.INC>    ; PIC16 math library definitions
 
+    __CONFIG _CP_OFF & _FOSC_XT & _WDTE_OFF & _PWRTE_ON & _LVP_OFF
 
-    __CONFIG _FOSC_XT & _WDTE_OFF & _PWRTE_OFF & _BOREN_ON & _LVP_OFF & _CPD_OFF & _WRT_OFF & _CP_OFF
+ZERO    EQU D'0'
+ONE     EQU D'1'
+TWO     EQU D'2'
+THREE   EQU D'3'
+FOUR    EQU D'4'
+FIVE    EQU D'5'
+SIX     EQU D'6'
+SEVEN   EQU D'7'
+EIGHT   EQU D'8'
+NINE    EQU D'9'
+
 
     ORG     H'0000'
         goto    START
+    ORG     H'0004'
+        goto    int_service
 
-    CBLOCK  H'7A'
+    CBLOCK  H'70'
         byte1
         byte2
         byte3
         byteW
+        counter
+        decimal_place
+        digit_one
+        digit_two
+        digit_three
+        digit_four
     ENDC
 
-EEWRITE
-        banksel EEDATA
-        movwf   EEDATA
-        banksel EECON1
-        bcf     EECON1, EEPGD
-        bsf     EECON1, WREN
-;Required Sequence
-        bcf     INTCON, GIE
-        movlw   0x55
-        movwf   EECON2
-        movlw   0xAA
-        movwf   EECON2
-        bsf     EECON1, WR
-        bsf     INTCON, GIE
-WAIT1   btfsc   EECON1,WR
-        goto    WAIT1
-        bcf     EECON1, WREN
-        banksel PIR2
-        bcf     PIR2, EEIF
-        banksel EEADR
-        incf    EEADR
-        return
+int_service
+    banksel     PORTA
+    movlw       b'00000010'
+    movwf       PORTA
+    banksel     PORTB
+    movlw       b'00111111'
+    movwf       PORTB
+
+    goto    $
+    return
+
+
+display_one     ;w is the decimal place in binary
+    banksel     PORTA
+    clrf        PORTA
+    clrf        PORTB
+    movwf       PORTA
+
+    movlw       b'00000110'
+    movwf       PORTB
+    return
+
+display_two     ;w is 1,2,3 or 4 - the decimal place
+    banksel     PORTA
+    clrf        PORTA
+    clrf        PORTB
+    movwf       PORTA
+
+    movlw       b'01011011'
+    movwf       PORTB
+    return
+
+display_three     ;w is 1,2,3 or 4 - the decimal place
+    banksel     PORTA
+    clrf        PORTA
+    clrf        PORTB
+    movwf       PORTA
+
+    movlw       b'01001111'
+    movwf       PORTB
+    return
+
+display_four     ;w is the decimal place in binary
+    banksel     PORTA
+    clrf        PORTA
+    clrf        PORTB
+    movwf       PORTA
+
+    movlw       b'01100110'
+    movwf       PORTB
+    return
+
+display_five     ;w is the decimal place in binary
+    banksel     PORTA
+    clrf        PORTA
+    clrf        PORTB
+    movwf       PORTA
+
+    movlw       b'01101101'
+    movwf       PORTB
+    return
+
+display_six     ;w is the decimal place in binary
+    banksel     PORTA
+    clrf        PORTA
+    clrf        PORTB
+    movwf       PORTA
+
+    movlw       b'01111101'
+    movwf       PORTB
+    return
+
+display_seven     ;w is the decimal place in binary
+    banksel     PORTA
+    clrf        PORTA
+    clrf        PORTB
+    movwf       PORTA
+
+    movlw       b'00000111'
+    movwf       PORTB
+    return
+
+display_eight     ;w is the decimal place in binary
+    banksel     PORTA
+    clrf        PORTA
+    clrf        PORTB
+    movwf       PORTA
+
+    movlw       b'01111111'
+    movwf       PORTB
+    return
+
+display_nine     ;w is the decimal place in binary
+    banksel     PORTA
+    clrf        PORTA
+    clrf        PORTB
+    movwf       PORTA
+
+    movlw       b'11101111'
+    movwf       PORTB
+    return
+
+display_zero     ;w is the decimal place in binary
+    banksel     PORTA
+    clrf        PORTA
+    clrf        PORTB
+    movwf       PORTA
+
+    movlw       b'00111111'
+    movwf       PORTB
+    return
 
 TXPOLL
     banksel     PIR1
@@ -150,7 +258,7 @@ send_address_and_register
     movwf       SSPBUF
     wait_for_ack_i2c
     banksel     SSPBUF
-    movlw       b'00000001'   ; last two bits indicate register to read 0 0 -> t reg 0 1 -> conf reg
+    movlw       b'00000000'   ; last two bits indicate register to read 0 0 -> t reg 0 1 -> conf reg
     movwf       SSPBUF
     wait_for_ack_i2c
     stop_i2c
@@ -166,15 +274,7 @@ send_address_and_register
     send_read_ack_i2c
 
     call        TXPOLL
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
+    
     nop
     banksel     byte1
     movwf       byte1
@@ -182,15 +282,7 @@ send_address_and_register
     read_data_i2cA
     send_read_ack_i2c
 
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
+    
     nop
     call        TXPOLL
     banksel     byte2
@@ -199,15 +291,7 @@ send_address_and_register
     banksel     SSPBUF
     movfw       SSPBUF
 
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
+    
     nop
     call        TXPOLL
     banksel     byte3
@@ -223,6 +307,102 @@ send_address_and_register
     movfw       byte3
     call        TXPOLL
         return
+
+display
+check_one   movfw   REMB1
+            sublw   d'1'
+            btfsc   STATUS,Z
+            goto    one
+            goto    check_two
+one         movfw   decimal_place
+            call    display_one
+            goto    end_digits
+check_two   movfw   REMB1
+            sublw   d'2'
+            btfsc   STATUS,Z
+            goto    two
+            goto    check_three
+two         movfw   decimal_place
+            call    display_two
+            goto    end_digits
+check_three movfw   REMB1
+            sublw   d'3'
+            btfsc   STATUS,Z
+            goto    three
+            goto    check_four
+three       movfw   decimal_place
+            call    display_three
+check_four  movfw   REMB1
+            sublw   d'4'
+            btfsc   STATUS,Z
+            goto    four
+            goto    check_five
+four        movfw   decimal_place
+            call    display_four
+check_five  movfw   REMB1
+            sublw   d'5'
+            btfsc   STATUS,Z
+            goto    five
+            goto    check_six
+five        movfw   decimal_place
+            call    display_five
+check_six   movfw   REMB1
+            sublw   d'6'
+            btfsc   STATUS,Z
+            goto    six
+            goto    check_seven
+six         movfw   decimal_place
+            call    display_six
+check_seven movfw   REMB1
+            sublw   d'7'
+            btfsc   STATUS,Z
+            goto    seven
+            goto    check_eight
+seven       movfw   decimal_place
+            call    display_seven
+check_eight movfw   REMB1
+            sublw   d'8'
+            btfsc   STATUS,Z
+            goto    eight
+            goto    check_nine
+eight       movfw   decimal_place
+            call    display_eight
+check_nine  movfw   REMB1
+            sublw   d'9'
+            btfsc   STATUS,Z
+            goto    nine
+            goto    check_zero
+nine        movfw   decimal_place
+            call    display_nine
+check_zero  movfw   REMB1
+            sublw   d'0'
+            btfsc   STATUS,Z
+            goto    zero
+            goto    end_digits
+zero        movfw   decimal_place
+            call    display_zero
+
+end_digits
+            return
+
+wait
+            banksel counter
+            movlw   d'20'
+            movwf   counter
+            banksel TMR0
+            clrf    TMR0
+
+wait_again
+            bcf     INTCON, 2
+
+wait_loop
+            btfss   INTCON, T0IF
+            goto    wait_loop
+
+            banksel counter
+            decfsz  counter,1
+            goto    wait_again
+   return
 
 
 
@@ -242,6 +422,8 @@ START
      banksel TRISA
      movlw   B'00000000'
      movwf   PORTA
+
+         
 
      ;i2c setup
     movlw       b'00101000'
@@ -301,9 +483,15 @@ START
     movlw   h'FF'
     call    TXPOLL
 
-    movlw   0x06
+main_loop
+    call send_address_and_register
+
+    clrf    AEXP
+    clrf    AARGB2
+
+    movfw   byte2
     movwf   AARGB0
-    movlw   0x0A
+    movfw   byte3
     movwf   AARGB1
     call    FLO1624
 
@@ -314,7 +502,7 @@ START
     movfw   AARGB1
     call    TXPOLL
 
-    movlw   0x7B
+    movlw   0x7B    ;0.0625
     movwf   BEXP
     movlw   0x00
     movwf   BARGB0
@@ -330,12 +518,94 @@ START
     movfw   AARGB1
     call    TXPOLL
 
-    banksel     PORTA
-    movlw       b'00000001'
-    movwf       PORTA
-    banksel     PORTB
-    movlw       b'00000111'
-    movwf       PORTB
+    clrf    BEXP
+    clrf    BARGB0
+    clrf    BARGB1
+    clrf    BARGB2
+
+    ;1000 in microchip format
+    ;movlw   0x88
+    ;movwf   BEXP
+    ;movlw   0x7A
+    ;movwf   BARGB0
+    ;movlw   0x00
+    ;movwf   BARGB1
+
+    ;100 in microchip format
+    ;movlw   0x85
+    ;movwf   BEXP
+    ;movlw   0x48
+   ; movwf   BARGB0
+    ;movlw   0x00
+    ;movwf   BARGB1
+
+    ;10 in microchip format
+    movlw   0x82
+    movwf   BEXP
+    movlw   0x20
+    movwf   BARGB0
+    movlw   0x00
+    movwf   BARGB1
+
+    call    FPM24
+
+    call    INT2424
+
+    movfw   AARGB0
+    call    TXPOLL
+    movfw   AARGB1
+    call    TXPOLL
+    movfw   AARGB2
+    call    TXPOLL
+
+    clrf    BARGB0
+    movlw   d'10'
+    movwf   BARGB1
+    call    FXD2416U
+
+    movfw   REMB1
+    movwf   digit_one
+    call    TXPOLL
+
+    movlw   b'00001000'
+    banksel decimal_place
+    movwf   decimal_place
+    pagesel display
+    call    display
+
+    clrf    BARGB0
+    movlw   d'10'
+    movwf   BARGB1
+    call    FXD2416U
+
+    movfw   REMB1
+    movwf   digit_two
+    call    TXPOLL
+
+    movlw   b'00000100'
+    banksel decimal_place
+    movwf   decimal_place
+    pagesel display
+    call    display
+
+
+    clrf    BARGB0
+    movlw   d'10'
+    movwf   BARGB1
+    call    FXD2416U
+
+    movfw   REMB1
+    movwf   digit_three
+    call    TXPOLL
+
+    movlw   b'00000010'
+    banksel decimal_place
+    movwf   decimal_place
+    pagesel display
+    call    display
+
+    pagesel wait
+    call    wait
 
     banksel     byte1
     movlw       b'11111111'
@@ -350,52 +620,12 @@ START
     movfw       byte3
     call        TXPOLL
 
+    
+    goto        main_loop
 
-
-    ;call send_address_and_register
-
-
-led_loop
-    clrf        PORTA
-    clrf        PORTB
-    banksel     PORTA
-    movlw       b'00000001'
-    movwf       PORTA
-    banksel     PORTB
-    movlw       b'00000110'
-    movwf       PORTB
-
-    clrf        PORTA
-    clrf        PORTB
-    banksel     PORTA
-    movlw       b'00000010'
-    movwf       PORTA
-    banksel     PORTB
-    movlw       b'01011011'
-    movwf       PORTB
-
-    clrf        PORTA
-    clrf        PORTB
-    banksel     PORTA
-    movlw       b'00000100'
-    movwf       PORTA
-    banksel     PORTB
-    movlw       b'01001111'
-    movwf       PORTB
-
-    clrf        PORTA
-    clrf        PORTB
-    banksel     PORTA
-    movlw       b'00001000'
-    movwf       PORTA
-    banksel     PORTB
-    movlw       b'01100110'
-    movwf       PORTB
-
-    call send_address_and_register
-    goto        led_loop
 
     INCLUDE <FP24.A16>
+    INCLUDE <FXD46.A16>
 
     END
 
