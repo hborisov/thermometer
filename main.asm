@@ -16,14 +16,6 @@ SEVEN   EQU D'7'
 EIGHT   EQU D'8'
 NINE    EQU D'9'
 
-
-    ORG     H'0000'
-        pagesel START
-        goto    START
-    ORG     H'0004'
-        pagesel int_service
-        goto    int_service
-
     CBLOCK  H'70'
         byte1
         byte2
@@ -37,28 +29,44 @@ NINE    EQU D'9'
         digit_four
         current_digit
         indication_counter
+        w_temp
+        status_temp
+        pclath_temp
     ENDC
 
+    ORG     H'0000'
+        pagesel START
+        goto    START
+    ORG     H'0004'
+        pagesel int_service
+        goto    int_service
 
+    
 int_service
+    movwf       w_temp
+    swapf       STATUS,W
+    movwf       status_temp
+    movf        PCLATH,w	;save PCLath
+    movwf       pclath_temp
+    clrf        PCLATH	;assume that this ISR is in page 0
+
     btfss       PIR1,TMR1IF
     goto        exit_interrupt
     
-    banksel     PORTA
-    movlw       b'00000010'
-    movwf       PORTA
-    banksel     PORTB
-    movlw       b'11111111'
-    movwf       PORTB
-
     ;--------------------------------------
+    pagesel     send_receive_display
+    call        send_receive_display
+    ;--------------------------------------
+
     
-    ;--------------------------------------
-
-    pagesel     wait
-    ;call        wait
-
 exit_interrupt
+    movf        pclath_temp,w
+    movwf       PCLATH
+    swapf       status_temp,w
+    movwf       STATUS
+    swapf       w_temp,f
+    swapf       w_temp,w
+
     banksel     PIR1
     bcf         PIR1,TMR1IF
     retfie
@@ -144,6 +152,7 @@ display_eight     ;w is the decimal place in binary
     movwf       PORTB
     return
 
+
 display_nine     ;w is the decimal place in binary
     banksel     PORTA
     clrf        PORTA
@@ -172,11 +181,6 @@ TXPOLL
     movwf       TXREG
     return
 
-TXPOLL_DUMMY
-    banksel     PIR1
-    btfss       PIR1,TXIF
-    goto        TXPOLL
-
 RXPOLL
     banksel     PIR1
     btfss       PIR1,RCIF
@@ -186,14 +190,15 @@ RXPOLL
     return
 
 start_i2c         MACRO              ;[S]
-     banksel     PIR1                                     ;bank0 (bank0? names) be sure
-     bcf         PIR1,SSPIF
-     banksel     SSPCON2                                    ;bank1
-     bsf         SSPCON2,SEN     ;send i2c START [S] bit
-     banksel     PIR1                                 ;bank0
-     btfss       PIR1,SSPIF         ;start bit cycle complete?
-     goto        $-1
-       endm
+    LOCAL start_bit_completed
+                     banksel     PIR1                                     ;bank0 (bank0? names) be sure
+                     bcf         PIR1,SSPIF
+                     banksel     SSPCON2                                    ;bank1
+                     bsf         SSPCON2,SEN     ;send i2c START [S] bit
+                     banksel     PIR1                                 ;bank0
+start_bit_completed  btfss       PIR1,SSPIF         ;start bit cycle complete?
+                     goto        start_bit_completed
+                    endm
 
 
 repeated_start_i2c     MACRO
@@ -202,21 +207,23 @@ repeated_start_i2c     MACRO
        endm
 
 stop_i2c         MACRO                  ;[P]
-     banksel    PIR1                                           ;bank0
-     bcf        PIR1,SSPIF
-     banksel    SSPCON2                                     ;bank1
-     bsf        SSPCON2,PEN         ;send i2c STOP [P] bit
-     banksel    PIR1                                           ;bank0
-     btfsS      PIR1,SSPIF             ;stop bit cycle completed?
-     goto         $-1
-           endm
+    LOCAL   stop_bit_completed
+                    banksel    PIR1                                           ;bank0
+                    bcf        PIR1,SSPIF
+                    banksel    SSPCON2                                     ;bank1
+                    bsf        SSPCON2,PEN         ;send i2c STOP [P] bit
+                    banksel    PIR1                                           ;bank0
+stop_bit_completed  btfss      PIR1,SSPIF             ;stop bit cycle completed?
+                    goto       stop_bit_completed
+   endm
 
 wait_for_ack_i2c         MACRO
-     banksel        PIR1                     ;bank0
-     bcf            PIR1,SSPIF
-     btfsS          PIR1,SSPIF                 ;ACK received?
-     goto         $-1
-       endm
+    LOCAL   ack_bit_received
+                    banksel        PIR1                     ;bank0
+                    bcf            PIR1,SSPIF
+ack_bit_received    btfss          PIR1,SSPIF                 ;ACK received?
+                    goto           ack_bit_received
+   endm
 
 read_data_i2c MACRO
     banksel     SSPBUF
@@ -224,10 +231,12 @@ read_data_i2c MACRO
         endm
 
 read_data_i2cA MACRO
+    LOCAL RWaitA
         ;banksel     SSPCON2
         ;bsf         SSPCON2,RCEN
         banksel     PIR1
-    LOCAL RWaitA
+RWaitA  nop
+        pagesel     RWaitA
         btfss       PIR1,SSPIF
         goto        RWaitA
         bcf         PIR1,SSPIF
@@ -236,21 +245,22 @@ read_data_i2cA MACRO
         endm
 
 send_read_ack_i2c MACRO
-    banksel     SSPCON2
-    bcf         SSPCON2,ACKDT
-    bsf         SSPCON2,ACKEN
-    btfsc       SSPCON2,ACKEN
-    goto        $-1
-    bsf         SSPCON2,RCEN
-        endm
+    LOCAL   ack_bit_sent
+                banksel     SSPCON2
+                bcf         SSPCON2,ACKDT
+                bsf         SSPCON2,ACKEN
+ack_bit_sent    btfsc       SSPCON2,ACKEN
+                goto        ack_bit_sent
+                bsf         SSPCON2,RCEN
+    endm
 
 send_read_nack_i2c MACRO
-    banksel     SSPCON2
-    bsf         SSPCON2,ACKDT
-    bsf         SSPCON2,ACKEN
-    btfsc       SSPCON2,ACKEN
-    goto        $-1
-    ;bsf         SSPCON2,RCEN
+    LOCAL   nack_bit_sent
+                banksel     SSPCON2
+                bsf         SSPCON2,ACKDT
+                bsf         SSPCON2,ACKEN
+nack_bit_sent   btfsc       SSPCON2,ACKEN
+                goto        nack_bit_sent
         endm
 
 swap_bibbles MACRO
@@ -290,6 +300,7 @@ send_address_and_register
     read_data_i2cA
     send_read_ack_i2c
 
+    pagesel     TXPOLL
     call        TXPOLL
     
     nop
@@ -301,6 +312,7 @@ send_address_and_register
 
     
     nop
+    pagesel     TXPOLL
     call        TXPOLL
     banksel     byte2
     movwf       byte2
@@ -310,6 +322,7 @@ send_address_and_register
 
     
     nop
+    pagesel     TXPOLL
     call        TXPOLL
     banksel     byte3
     movwf       byte3
@@ -319,6 +332,7 @@ send_address_and_register
     swap_bibbles
 
     banksel     byte1
+    pagesel     TXPOLL
     movfw       byte2
     call        TXPOLL
     movfw       byte3
@@ -435,8 +449,8 @@ indication_loop
     pagesel display
     call    display
 
-    pagesel wait
-    call    wait
+    ;pagesel wait
+    ;call    wait
 
     movlw   b'00000010'
     banksel decimal_place
@@ -446,8 +460,8 @@ indication_loop
     pagesel display
     call    display
 
-    pagesel wait
-    call    wait
+    ;pagesel wait
+    ;call    wait
 
     movlw   b'00000001'
     banksel decimal_place
@@ -457,8 +471,8 @@ indication_loop
     pagesel display
     call    display
 
-    pagesel wait
-    call    wait
+    ;pagesel wait
+    ;call    wait
 
     banksel indication_counter
     decfsz  indication_counter,1
@@ -479,13 +493,9 @@ send_receive_display
     pagesel FLO1624
     call    FLO1624
 
-    pagesel TXPOLL
     movfw   AEXP
-    call    TXPOLL
     movfw   AARGB0
-    call    TXPOLL
     movfw   AARGB1
-    call    TXPOLL
 
     movlw   0x7B    ;0.0625
     movwf   BEXP
@@ -495,15 +505,10 @@ send_receive_display
 
     pagesel FPM24
     call    FPM24
-    pagesel TXPOLL
-    call    TXPOLL
 
     movfw   AEXP
-    call    TXPOLL
     movfw   AARGB0
-    call    TXPOLL
     movfw   AARGB1
-    call    TXPOLL
 
     clrf    BEXP
     clrf    BARGB0
@@ -540,13 +545,9 @@ send_receive_display
     pagesel INT2424
     call    INT2424
 
-    pagesel TXPOLL
     movfw   AARGB0
-    call    TXPOLL
     movfw   AARGB1
-    call    TXPOLL
     movfw   AARGB2
-    call    TXPOLL
 
     clrf    BARGB0
     movlw   d'10'
@@ -556,8 +557,6 @@ send_receive_display
 
     movfw   REMB1
     movwf   digit_one
-    pagesel TXPOLL
-    call    TXPOLL
 
     clrf    BARGB0
     movlw   d'10'
@@ -567,8 +566,6 @@ send_receive_display
 
     movfw   REMB1
     movwf   digit_two
-    pagesel TXPOLL
-    call    TXPOLL
 
     clrf    BARGB0
     movlw   d'10'
@@ -578,8 +575,6 @@ send_receive_display
 
     movfw   REMB1
     movwf   digit_three
-    pagesel TXPOLL
-    call    TXPOLL
 
     return
 
@@ -655,7 +650,7 @@ START
 
 
     ;begin
-
+    pagesel TXPOLL
     movlw   h'AA'
     call    TXPOLL
     movlw   h'BB'
@@ -682,28 +677,14 @@ START
     movlw   h'FF'
     call    TXPOLL
 
-main_loop
-    
     pagesel send_receive_display
     call    send_receive_display
+main_loop
 
     pagesel indication_loop
     call    indication_loop
 
-    banksel     byte1
-    movlw       b'11111111'
-    movwf       byte1
-    movwf       byte2
-    movwf       byte3
-
-    movfw       byte1
-    call        TXPOLL
-    movfw       byte2
-    call        TXPOLL
-    movfw       byte3
-    call        TXPOLL
-
-    
+    pagesel     main_loop
     goto        main_loop
 
 
