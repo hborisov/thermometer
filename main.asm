@@ -18,8 +18,10 @@ NINE    EQU D'9'
 
 
     ORG     H'0000'
+        pagesel START
         goto    START
     ORG     H'0004'
+        pagesel int_service
         goto    int_service
 
     CBLOCK  H'70'
@@ -33,18 +35,33 @@ NINE    EQU D'9'
         digit_two
         digit_three
         digit_four
+        current_digit
+        indication_counter
     ENDC
 
+
 int_service
+    btfss       PIR1,TMR1IF
+    goto        exit_interrupt
+    
     banksel     PORTA
     movlw       b'00000010'
     movwf       PORTA
     banksel     PORTB
-    movlw       b'00111111'
+    movlw       b'11111111'
     movwf       PORTB
 
-    goto    $
-    return
+    ;--------------------------------------
+    
+    ;--------------------------------------
+
+    pagesel     wait
+    ;call        wait
+
+exit_interrupt
+    banksel     PIR1
+    bcf         PIR1,TMR1IF
+    retfie
 
 
 display_one     ;w is the decimal place in binary
@@ -309,7 +326,7 @@ send_address_and_register
         return
 
 display
-check_one   movfw   REMB1
+check_one   movfw   current_digit
             sublw   d'1'
             btfsc   STATUS,Z
             goto    one
@@ -317,7 +334,7 @@ check_one   movfw   REMB1
 one         movfw   decimal_place
             call    display_one
             goto    end_digits
-check_two   movfw   REMB1
+check_two   movfw   current_digit
             sublw   d'2'
             btfsc   STATUS,Z
             goto    two
@@ -325,56 +342,56 @@ check_two   movfw   REMB1
 two         movfw   decimal_place
             call    display_two
             goto    end_digits
-check_three movfw   REMB1
+check_three movfw   current_digit
             sublw   d'3'
             btfsc   STATUS,Z
             goto    three
             goto    check_four
 three       movfw   decimal_place
             call    display_three
-check_four  movfw   REMB1
+check_four  movfw   current_digit
             sublw   d'4'
             btfsc   STATUS,Z
             goto    four
             goto    check_five
 four        movfw   decimal_place
             call    display_four
-check_five  movfw   REMB1
+check_five  movfw   current_digit
             sublw   d'5'
             btfsc   STATUS,Z
             goto    five
             goto    check_six
 five        movfw   decimal_place
             call    display_five
-check_six   movfw   REMB1
+check_six   movfw   current_digit
             sublw   d'6'
             btfsc   STATUS,Z
             goto    six
             goto    check_seven
 six         movfw   decimal_place
             call    display_six
-check_seven movfw   REMB1
+check_seven movfw   current_digit
             sublw   d'7'
             btfsc   STATUS,Z
             goto    seven
             goto    check_eight
 seven       movfw   decimal_place
             call    display_seven
-check_eight movfw   REMB1
+check_eight movfw   current_digit
             sublw   d'8'
             btfsc   STATUS,Z
             goto    eight
             goto    check_nine
 eight       movfw   decimal_place
             call    display_eight
-check_nine  movfw   REMB1
+check_nine  movfw   current_digit
             sublw   d'9'
             btfsc   STATUS,Z
             goto    nine
             goto    check_zero
 nine        movfw   decimal_place
             call    display_nine
-check_zero  movfw   REMB1
+check_zero  movfw   current_digit
             sublw   d'0'
             btfsc   STATUS,Z
             goto    zero
@@ -387,14 +404,14 @@ end_digits
 
 wait
             banksel counter
-            movlw   d'20'
+            movlw   d'1'
             movwf   counter
             banksel TMR0
-            clrf    TMR0
+            movlw   d'200'
+            movwf   TMR0
 
 wait_again
-            bcf     INTCON, 2
-
+            bcf     INTCON, T0IF
 wait_loop
             btfss   INTCON, T0IF
             goto    wait_loop
@@ -404,6 +421,167 @@ wait_loop
             goto    wait_again
    return
 
+indication_loop
+
+    banksel indication_counter
+    movlw   0xFF
+    movwf   indication_counter
+
+    movlw   b'00000100'
+    banksel decimal_place
+    movwf   decimal_place
+    movfw   digit_one
+    movwf   current_digit
+    pagesel display
+    call    display
+
+    pagesel wait
+    call    wait
+
+    movlw   b'00000010'
+    banksel decimal_place
+    movwf   decimal_place
+    movfw   digit_two
+    movwf   current_digit
+    pagesel display
+    call    display
+
+    pagesel wait
+    call    wait
+
+    movlw   b'00000001'
+    banksel decimal_place
+    movwf   decimal_place
+    movfw   digit_three
+    movwf   current_digit
+    pagesel display
+    call    display
+
+    pagesel wait
+    call    wait
+
+    banksel indication_counter
+    decfsz  indication_counter,1
+
+    return
+
+send_receive_display
+    pagesel send_address_and_register
+    call send_address_and_register
+
+    clrf    AEXP
+    clrf    AARGB2
+
+    movfw   byte2
+    movwf   AARGB0
+    movfw   byte3
+    movwf   AARGB1
+    pagesel FLO1624
+    call    FLO1624
+
+    pagesel TXPOLL
+    movfw   AEXP
+    call    TXPOLL
+    movfw   AARGB0
+    call    TXPOLL
+    movfw   AARGB1
+    call    TXPOLL
+
+    movlw   0x7B    ;0.0625
+    movwf   BEXP
+    movlw   0x00
+    movwf   BARGB0
+    movwf   BARGB1
+
+    pagesel FPM24
+    call    FPM24
+    pagesel TXPOLL
+    call    TXPOLL
+
+    movfw   AEXP
+    call    TXPOLL
+    movfw   AARGB0
+    call    TXPOLL
+    movfw   AARGB1
+    call    TXPOLL
+
+    clrf    BEXP
+    clrf    BARGB0
+    clrf    BARGB1
+    clrf    BARGB2
+
+    ;1000 in microchip format
+    ;movlw   0x88
+    ;movwf   BEXP
+    ;movlw   0x7A
+    ;movwf   BARGB0
+    ;movlw   0x00
+    ;movwf   BARGB1
+
+    ;100 in microchip format
+    ;movlw   0x85
+    ;movwf   BEXP
+    ;movlw   0x48
+   ; movwf   BARGB0
+    ;movlw   0x00
+    ;movwf   BARGB1
+
+    ;10 in microchip format
+    movlw   0x82
+    movwf   BEXP
+    movlw   0x20
+    movwf   BARGB0
+    movlw   0x00
+    movwf   BARGB1
+
+    pagesel FPM24
+    call    FPM24
+
+    pagesel INT2424
+    call    INT2424
+
+    pagesel TXPOLL
+    movfw   AARGB0
+    call    TXPOLL
+    movfw   AARGB1
+    call    TXPOLL
+    movfw   AARGB2
+    call    TXPOLL
+
+    clrf    BARGB0
+    movlw   d'10'
+    movwf   BARGB1
+    pagesel FXD2416U
+    call    FXD2416U
+
+    movfw   REMB1
+    movwf   digit_one
+    pagesel TXPOLL
+    call    TXPOLL
+
+    clrf    BARGB0
+    movlw   d'10'
+    movwf   BARGB1
+    pagesel FXD2416U
+    call    FXD2416U
+
+    movfw   REMB1
+    movwf   digit_two
+    pagesel TXPOLL
+    call    TXPOLL
+
+    clrf    BARGB0
+    movlw   d'10'
+    movwf   BARGB1
+    pagesel FXD2416U
+    call    FXD2416U
+
+    movfw   REMB1
+    movwf   digit_three
+    pagesel TXPOLL
+    call    TXPOLL
+
+    return
 
 
 MAIN_PROG CODE                      ; let linker place main program
@@ -455,6 +633,27 @@ START
     movlw       b'10010000'
     movwf       RCSTA
 
+    ;timer1 setup
+    
+    movlw       b'00110001'   ;bit 5-4 -> 00 prescaler = 1:1 bit 1-0 ->
+    banksel     T1CON         ; -> internal clock enable timer 1
+    movwf       T1CON
+    banksel     PIR1
+    clrf        PIR1
+    clrf        PIR2
+    movlw       b'00000001'
+    banksel     PIE1
+    movwf       PIE1
+    clrf        PIE2
+    clrf        INTCON
+    bsf         INTCON,PEIE
+    bsf         INTCON,GIE
+    banksel     TMR1H
+    clrf        TMR1H
+    clrf        TMR1L
+    
+
+
     ;begin
 
     movlw   h'AA'
@@ -484,128 +683,12 @@ START
     call    TXPOLL
 
 main_loop
-    call send_address_and_register
+    
+    pagesel send_receive_display
+    call    send_receive_display
 
-    clrf    AEXP
-    clrf    AARGB2
-
-    movfw   byte2
-    movwf   AARGB0
-    movfw   byte3
-    movwf   AARGB1
-    call    FLO1624
-
-    movfw   AEXP
-    call    TXPOLL
-    movfw   AARGB0
-    call    TXPOLL
-    movfw   AARGB1
-    call    TXPOLL
-
-    movlw   0x7B    ;0.0625
-    movwf   BEXP
-    movlw   0x00
-    movwf   BARGB0
-    movwf   BARGB1
-
-    call    FPM24
-    call    TXPOLL
-
-    movfw   AEXP
-    call    TXPOLL
-    movfw   AARGB0
-    call    TXPOLL
-    movfw   AARGB1
-    call    TXPOLL
-
-    clrf    BEXP
-    clrf    BARGB0
-    clrf    BARGB1
-    clrf    BARGB2
-
-    ;1000 in microchip format
-    ;movlw   0x88
-    ;movwf   BEXP
-    ;movlw   0x7A
-    ;movwf   BARGB0
-    ;movlw   0x00
-    ;movwf   BARGB1
-
-    ;100 in microchip format
-    ;movlw   0x85
-    ;movwf   BEXP
-    ;movlw   0x48
-   ; movwf   BARGB0
-    ;movlw   0x00
-    ;movwf   BARGB1
-
-    ;10 in microchip format
-    movlw   0x82
-    movwf   BEXP
-    movlw   0x20
-    movwf   BARGB0
-    movlw   0x00
-    movwf   BARGB1
-
-    call    FPM24
-
-    call    INT2424
-
-    movfw   AARGB0
-    call    TXPOLL
-    movfw   AARGB1
-    call    TXPOLL
-    movfw   AARGB2
-    call    TXPOLL
-
-    clrf    BARGB0
-    movlw   d'10'
-    movwf   BARGB1
-    call    FXD2416U
-
-    movfw   REMB1
-    movwf   digit_one
-    call    TXPOLL
-
-    movlw   b'00001000'
-    banksel decimal_place
-    movwf   decimal_place
-    pagesel display
-    call    display
-
-    clrf    BARGB0
-    movlw   d'10'
-    movwf   BARGB1
-    call    FXD2416U
-
-    movfw   REMB1
-    movwf   digit_two
-    call    TXPOLL
-
-    movlw   b'00000100'
-    banksel decimal_place
-    movwf   decimal_place
-    pagesel display
-    call    display
-
-
-    clrf    BARGB0
-    movlw   d'10'
-    movwf   BARGB1
-    call    FXD2416U
-
-    movfw   REMB1
-    movwf   digit_three
-    call    TXPOLL
-
-    movlw   b'00000010'
-    banksel decimal_place
-    movwf   decimal_place
-    pagesel display
-    call    display
-
-    pagesel wait
-    call    wait
+    pagesel indication_loop
+    call    indication_loop
 
     banksel     byte1
     movlw       b'11111111'
