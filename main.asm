@@ -56,6 +56,8 @@ int_service
     ;--------------------------------------
     pagesel     send_receive_display
     call        send_receive_display
+    pagesel     send_real_data
+    call        send_real_data
     ;--------------------------------------
 
     
@@ -331,12 +333,6 @@ send_address_and_register
 
     swap_bibbles
 
-    banksel     byte1
-    pagesel     TXPOLL
-    movfw       byte2
-    call        TXPOLL
-    movfw       byte3
-    call        TXPOLL
         return
 
 display
@@ -578,6 +574,23 @@ send_receive_display
 
     return
 
+send_real_data
+    banksel digit_three
+    movfw   digit_three
+    pagesel TXPOLL
+    call    TXPOLL
+
+    banksel digit_two
+    movfw   digit_two
+    pagesel TXPOLL
+    call    TXPOLL
+
+    banksel digit_one
+    movfw   digit_one
+    pagesel TXPOLL
+    call    TXPOLL
+
+    return
 
 MAIN_PROG CODE                      ; let linker place main program
 START
