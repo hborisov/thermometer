@@ -58,9 +58,6 @@ int_service
 
     btfss       PIR1,TMR1IF
     goto        exit_interrupt
-
-    ;pagesel     delay_malko
-    ;call        delay_malko
     
     pagesel     open_i2c
     call        open_i2c
@@ -189,7 +186,7 @@ display_zero     ;w is the decimal place in binary
     return
 
 delay_malko
-    movlw   0x0f
+    movlw   0xff
     banksel d1
     movwf   d1
     pagesel lp1
@@ -218,18 +215,6 @@ Delay_0
 	goto	$+1
 	goto	$+1
 	goto	$+1
-    return
-
-DUMMY
-    banksel     PIR1
-    btfss       PIR1,TXIF
-    goto        DUMMY
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
     return
 
 TXPOLL
@@ -359,18 +344,7 @@ swap_bibbles MACRO
         endm
 
 send_address_and_register
-    ;start_i2c
-    LOCAL start_bit_completed
-                     banksel     PIR1                                     ;bank0 (bank0? names) be sure
-                     bcf         PIR1,SSPIF
-                     banksel     SSPCON2                                    ;bank1
-                     bsf         SSPCON2,SEN     ;send i2c START [S] bit
-                     banksel     PIR1                                 ;bank0
-start_bit_completed  btfss       PIR1,SSPIF         ;start bit cycle complete?
-                     goto        start_bit_completed
-                     banksel     PIR1      
-                     bcf         PIR1,SSPIF
-
+    start_i2c
     banksel     SSPBUF
     movlw       b'10010000'
     movwf       SSPBUF
@@ -522,8 +496,8 @@ indication_loop
     pagesel display
     call    display
 
-    ;pagesel wait
-    ;call    wait
+    pagesel delay_malko
+    call    delay_malko
 
     movlw   b'00000010'
     banksel decimal_place
@@ -533,8 +507,8 @@ indication_loop
     pagesel display
     call    display
 
-    ;pagesel wait
-    ;call    wait
+    pagesel delay_malko
+    call    delay_malko
 
     movlw   b'00000001'
     banksel decimal_place
@@ -544,8 +518,8 @@ indication_loop
     pagesel display
     call    display
 
-    ;pagesel wait
-    ;call    wait
+    pagesel delay_malko
+    call    delay_malko
 
     banksel indication_counter
     decfsz  indication_counter,1
@@ -704,7 +678,6 @@ START
      movwf   PORTA
 
          
-
     ;i2c setup
     pagesel     open_i2c
     call        open_i2c
