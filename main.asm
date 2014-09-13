@@ -34,6 +34,12 @@ NINE    EQU D'9'
         pclath_temp
     ENDC
 
+    CBLOCK  h'20'
+    d1
+    d2
+    d3
+    ENDC
+
     ORG     H'0000'
         pagesel START
         goto    START
@@ -52,7 +58,12 @@ int_service
 
     btfss       PIR1,TMR1IF
     goto        exit_interrupt
+
+    ;pagesel     delay_malko
+    ;call        delay_malko
     
+    pagesel     open_i2c
+    call        open_i2c
     ;--------------------------------------
     pagesel     send_receive_display
     call        send_receive_display
@@ -60,6 +71,8 @@ int_service
     call        send_real_data
     ;--------------------------------------
 
+    pagesel     delay_one_sec
+    call        delay_one_sec
     
 exit_interrupt
     movf        pclath_temp,w
@@ -175,6 +188,50 @@ display_zero     ;w is the decimal place in binary
     movwf       PORTB
     return
 
+delay_malko
+    movlw   0x0f
+    banksel d1
+    movwf   d1
+    pagesel lp1
+lp1
+    decfsz  d1
+    goto    lp1
+    return
+
+delay_one_sec
+    movlw	0x07
+    banksel d1
+	movwf	d1
+	movlw	0x2F
+	movwf	d2
+	movlw	0x03
+	movwf	d3
+Delay_0
+	decfsz	d1, f
+	goto	$+2
+	decfsz	d2, f
+	goto	$+2
+	decfsz	d3, f
+	goto	Delay_0
+
+			;6 cycles
+	goto	$+1
+	goto	$+1
+	goto	$+1
+    return
+
+DUMMY
+    banksel     PIR1
+    btfss       PIR1,TXIF
+    goto        DUMMY
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    return
+
 TXPOLL
     banksel     PIR1
     btfss       PIR1,TXIF
@@ -185,10 +242,31 @@ TXPOLL
 
 RXPOLL
     banksel     PIR1
+    btfss       PIR1,TXIF
+    goto        TXPOLL
+    banksel     PIR1
     btfss       PIR1,RCIF
     goto        RXPOLL
     banksel     RCREG
     movfw       RCREG
+    return
+
+open_i2c
+    movlw       b'00101000'
+    banksel     SSPCON
+    movwf       SSPCON
+
+    movlw       D'9'
+    banksel     SSPADD
+    movwf       SSPADD
+
+    movlw       b'10000000'
+    banksel     SSPSTAT
+    movwf       SSPSTAT
+
+    movlw       b'11011000'   ;usart and i2c set
+    banksel     TRISC
+    movwf       TRISC
     return
 
 start_i2c         MACRO              ;[S]
@@ -281,7 +359,18 @@ swap_bibbles MACRO
         endm
 
 send_address_and_register
-    start_i2c
+    ;start_i2c
+    LOCAL start_bit_completed
+                     banksel     PIR1                                     ;bank0 (bank0? names) be sure
+                     bcf         PIR1,SSPIF
+                     banksel     SSPCON2                                    ;bank1
+                     bsf         SSPCON2,SEN     ;send i2c START [S] bit
+                     banksel     PIR1                                 ;bank0
+start_bit_completed  btfss       PIR1,SSPIF         ;start bit cycle complete?
+                     goto        start_bit_completed
+                     banksel     PIR1      
+                     bcf         PIR1,SSPIF
+
     banksel     SSPBUF
     movlw       b'10010000'
     movwf       SSPBUF
@@ -302,35 +391,23 @@ send_address_and_register
     read_data_i2cA
     send_read_ack_i2c
 
-    pagesel     TXPOLL
-    call        TXPOLL
-    
-    nop
     banksel     byte1
     movwf       byte1
 
+    pagesel read_data_i2cA
     read_data_i2cA
     send_read_ack_i2c
 
-    
-    nop
-    pagesel     TXPOLL
-    call        TXPOLL
     banksel     byte2
     movwf       byte2
 
     banksel     SSPBUF
     movfw       SSPBUF
 
-    
-    nop
-    pagesel     TXPOLL
-    call        TXPOLL
     banksel     byte3
     movwf       byte3
 
     stop_i2c
-
     swap_bibbles
 
         return
@@ -575,21 +652,38 @@ send_receive_display
     return
 
 send_real_data
+    ;send 4 bytes device id
+    movlw   0x33
+    pagesel TXPOLL
+    call    TXPOLL
+    pagesel TXPOLL
+    call    TXPOLL
+    pagesel TXPOLL
+    call    TXPOLL
+    pagesel TXPOLL
+    call    TXPOLL
+
     banksel digit_three
     movfw   digit_three
+    addlw   0x30;
     pagesel TXPOLL
     call    TXPOLL
 
     banksel digit_two
     movfw   digit_two
+    addlw   0x30;
     pagesel TXPOLL
     call    TXPOLL
 
     banksel digit_one
     movfw   digit_one
+    addlw   0x30;
     pagesel TXPOLL
     call    TXPOLL
 
+    movlw   0x00
+    pagesel TXPOLL
+    call    TXPOLL
     return
 
 MAIN_PROG CODE                      ; let linker place main program
@@ -611,22 +705,9 @@ START
 
          
 
-     ;i2c setup
-    movlw       b'00101000'
-    banksel     SSPCON
-    movwf       SSPCON
-
-    movlw       D'9'
-    banksel     SSPADD
-    movwf       SSPADD
-
-    movlw       b'10000000'
-    banksel     SSPSTAT
-    movwf       SSPSTAT
-
-    movlw       b'11011000'   ;usart and i2c set
-    banksel     TRISC
-    movwf       TRISC
+    ;i2c setup
+    pagesel     open_i2c
+    call        open_i2c
 
     ;serial setup
     banksel     SPBRG
@@ -660,35 +741,6 @@ START
     clrf        TMR1H
     clrf        TMR1L
     
-
-
-    ;begin
-    pagesel TXPOLL
-    movlw   h'AA'
-    call    TXPOLL
-    movlw   h'BB'
-    call    TXPOLL
-    movlw   h'CC'
-    call    TXPOLL
-    movlw   h'DD'
-    call    TXPOLL
-    movlw   h'EE'
-    call    TXPOLL
-    movlw   h'FF'
-    call    TXPOLL
-
-    movlw   h'AA'
-    call    TXPOLL
-    movlw   h'BB'
-    call    TXPOLL
-    movlw   h'CC'
-    call    TXPOLL
-    movlw   h'DD'
-    call    TXPOLL
-    movlw   h'EE'
-    call    TXPOLL
-    movlw   h'FF'
-    call    TXPOLL
 
     pagesel send_receive_display
     call    send_receive_display
