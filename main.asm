@@ -38,6 +38,7 @@ NINE    EQU D'9'
     d1
     d2
     d3
+    operation
     ENDC
 
     ORG     H'0000'
@@ -56,20 +57,57 @@ int_service
     movwf       pclath_temp
     clrf        PCLATH	;assume that this ISR is in page 0
 
+    pagesel     refresh_display
     btfss       PIR1,TMR1IF
     goto        exit_interrupt
+    goto        refresh_display
+
+    btfss       PIR1,RCIF
+    goto        exit_interrupt
+
+rcif_interrupt
+    pagesel setupUSART
+    ;btfsc   RCSTA,OERR
+    ;call    setupUSART
+    btfsc   RCSTA,FERR
+    call    setupUSART
+    ;bcf     RCSTA,OERR
+    bcf     RCSTA,FERR
+
+    movfw   RCREG                   ;   read operation
+    banksel operation
+    movwf   operation
+
+    btfsc   RCSTA,OERR
+    call    setupUSART
+    bcf     RCSTA,OERR
+    bcf     RCSTA,CREN
+    bsf     RCSTA,CREN
     
+
+    sublw   0x01
+    pagesel operation_send_data
+    btfsc   STATUS,Z
+    call    operation_send_data
+    movfw   operation
+    sublw   0x02
+    pagesel operation_read_id
+    btfsc   STATUS,Z
+    call    operation_read_id
+
+refresh_display
+    pagesel     rcif_interrupt
+    btfsc       PIR1,RCIF
+    goto        rcif_interrupt
+
     pagesel     open_i2c
     call        open_i2c
     ;--------------------------------------
     pagesel     send_receive_display
     call        send_receive_display
-    pagesel     send_real_data
-    call        send_real_data
     ;--------------------------------------
 
-    pagesel     delay_one_sec
-    call        delay_one_sec
+    
     
 exit_interrupt
     movf        pclath_temp,w
@@ -81,8 +119,25 @@ exit_interrupt
 
     banksel     PIR1
     bcf         PIR1,TMR1IF
+    bcf         PIR1,RCIF
     retfie
 
+
+
+operation_send_data
+    pagesel     open_i2c
+    call        open_i2c
+    
+    pagesel     send_receive_display
+    call        send_receive_display
+    pagesel     send_real_data
+    call        send_real_data
+    
+    return
+
+operation_read_id
+    nop
+    return
 
 display_one     ;w is the decimal place in binary
     banksel     PORTA
@@ -217,6 +272,20 @@ Delay_0
 	goto	$+1
     return
 
+setupUSART
+    banksel     SPBRG
+    movlw       D'25'
+    movwf       SPBRG
+
+    banksel     TXSTA
+    movlw       b'00100100'
+    movwf       TXSTA
+
+    banksel     RCSTA
+    movlw       b'10010000'
+    movwf       RCSTA
+    return
+
 TXPOLL
     banksel     PIR1
     btfss       PIR1,TXIF
@@ -297,8 +366,6 @@ read_data_i2c MACRO
 
 read_data_i2cA MACRO
     LOCAL RWaitA
-        ;banksel     SSPCON2
-        ;bsf         SSPCON2,RCEN
         banksel     PIR1
 RWaitA  nop
         pagesel     RWaitA
@@ -682,18 +749,20 @@ START
     pagesel     open_i2c
     call        open_i2c
 
-    ;serial setup
-    banksel     SPBRG
-    movlw       D'25'
-    movwf       SPBRG
+    ;setup usart
+    pagesel     setupUSART
+    call        setupUSART
+    ;banksel     SPBRG
+    ;movlw       D'25'
+    ;movwf       SPBRG
 
-    banksel     TXSTA
-    movlw       b'00100100'
-    movwf       TXSTA
+    ;banksel     TXSTA
+    ;movlw       b'00100100'
+    ;movwf       TXSTA
 
-    banksel     RCSTA
-    movlw       b'10010000'
-    movwf       RCSTA
+    ;banksel     RCSTA
+    ;movlw       b'10010000'
+    ;movwf       RCSTA
 
     ;timer1 setup
     
@@ -703,7 +772,7 @@ START
     banksel     PIR1
     clrf        PIR1
     clrf        PIR2
-    movlw       b'00000001'
+    movlw       b'00100001'  ;RCIF enable bit <5> and timer overflow ir
     banksel     PIE1
     movwf       PIE1
     clrf        PIE2
