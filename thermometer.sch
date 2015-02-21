@@ -19089,12 +19089,12 @@ Source: www.cypressindustries.com</description>
 <part name="T8" library="transistor" deviceset="BC547" device=""/>
 <part name="T9" library="transistor" deviceset="BC547" device=""/>
 <part name="R1" library="eagle-ltspice" deviceset="R" device="0207/10" value="10K"/>
-<part name="R2" library="eagle-ltspice" deviceset="R" device="0207/10"/>
-<part name="R3" library="eagle-ltspice" deviceset="R" device="0207/10"/>
-<part name="R4" library="eagle-ltspice" deviceset="R" device="0207/10"/>
-<part name="R5" library="eagle-ltspice" deviceset="R" device="0207/10"/>
-<part name="R6" library="eagle-ltspice" deviceset="R" device="0207/10"/>
-<part name="R7" library="eagle-ltspice" deviceset="R" device="0207/10"/>
+<part name="R2" library="eagle-ltspice" deviceset="R" device="0207/10" value="10 K"/>
+<part name="R3" library="eagle-ltspice" deviceset="R" device="0207/10" value="10 K"/>
+<part name="R4" library="eagle-ltspice" deviceset="R" device="0207/10" value="10 K"/>
+<part name="R5" library="eagle-ltspice" deviceset="R" device="0207/10" value="10 K"/>
+<part name="R6" library="eagle-ltspice" deviceset="R" device="0207/10" value="10 K"/>
+<part name="R7" library="eagle-ltspice" deviceset="R" device="0207/10" value="10 K"/>
 <part name="GND1" library="supply1" deviceset="GND" device=""/>
 <part name="GND2" library="supply1" deviceset="GND" device=""/>
 <part name="GND3" library="supply1" deviceset="GND" device=""/>
@@ -19107,10 +19107,10 @@ Source: www.cypressindustries.com</description>
 <part name="R9" library="resistor" deviceset="R-EU_" device="0204/7" value="330"/>
 <part name="R10" library="resistor" deviceset="R-EU_" device="0204/7" value="330"/>
 <part name="R11" library="resistor" deviceset="R-EU_" device="0204/7" value="330"/>
-<part name="R12" library="rcl" deviceset="R-EU_" device="0204/7"/>
-<part name="C1" library="rcl" deviceset="C-EU" device="025-025X050"/>
-<part name="C2" library="rcl" deviceset="C-EU" device="025-025X050"/>
-<part name="C3" library="rcl" deviceset="C-EU" device="025-025X050"/>
+<part name="R12" library="rcl" deviceset="R-EU_" device="0204/7" value="10 K"/>
+<part name="C1" library="rcl" deviceset="C-EU" device="050-025X075" value="100 nF"/>
+<part name="C2" library="rcl" deviceset="C-EU" device="050-025X075" value="22 pF"/>
+<part name="C3" library="rcl" deviceset="C-EU" device="050-025X075" value="22 pF"/>
 <part name="GND8" library="supply1" deviceset="GND" device=""/>
 <part name="GND9" library="supply1" deviceset="GND" device=""/>
 <part name="GND10" library="supply1" deviceset="GND" device=""/>
@@ -19128,12 +19128,12 @@ Source: www.cypressindustries.com</description>
 <part name="GND14" library="supply1" deviceset="GND" device=""/>
 <part name="GND15" library="supply1" deviceset="GND" device=""/>
 <part name="GND16" library="supply1" deviceset="GND" device=""/>
-<part name="Q2" library="crystal" deviceset="54M10AUM1" device=""/>
+<part name="Q2" library="crystal" deviceset="54M10AUM1" device="" value="4 MHz"/>
 <part name="X1" library="con-subd" deviceset="F09" device="HP"/>
-<part name="C4" library="rcl" deviceset="CPOL-EU" device="E5-8.5"/>
-<part name="C5" library="rcl" deviceset="CPOL-EU" device="E5-8.5"/>
-<part name="C6" library="rcl" deviceset="CPOL-EU" device="E5-8.5"/>
-<part name="C7" library="rcl" deviceset="CPOL-EU" device="E5-8.5"/>
+<part name="C4" library="rcl" deviceset="CPOL-EU" device="E1.8-4" value="1 uF"/>
+<part name="C5" library="rcl" deviceset="CPOL-EU" device="E1.8-4" value="1 uF"/>
+<part name="C6" library="rcl" deviceset="CPOL-EU" device="E1.8-4" value="1 uF"/>
+<part name="C7" library="rcl" deviceset="CPOL-EU" device="E1.8-4" value="1 uF"/>
 <part name="IC1" library="maxim" deviceset="MAX232" device=""/>
 <part name="P+6" library="supply1" deviceset="VCC" device=""/>
 <part name="GND17" library="supply1" deviceset="GND" device=""/>
@@ -19144,7 +19144,6 @@ Source: www.cypressindustries.com</description>
 <part name="GND19" library="supply1" deviceset="GND" device=""/>
 <part name="X2" library="con-cypressindustries" deviceset="MINI-USB_SHIELD4P-" device="85-32004-10X"/>
 <part name="P+8" library="supply1" deviceset="VCC" device=""/>
-<part name="GND20" library="supply1" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -19198,7 +19197,10 @@ Source: www.cypressindustries.com</description>
 <instance part="GND14" gate="1" x="-63.5" y="119.38"/>
 <instance part="GND15" gate="1" x="-58.42" y="119.38"/>
 <instance part="GND16" gate="1" x="-53.34" y="119.38"/>
-<instance part="Q2" gate="G$1" x="-12.7" y="200.66"/>
+<instance part="Q2" gate="G$1" x="-12.7" y="200.66" smashed="yes">
+<attribute name="NAME" x="-10.16" y="201.676" size="1.778" layer="95"/>
+<attribute name="VALUE" x="-10.16" y="198.12" size="1.778" layer="96"/>
+</instance>
 <instance part="X1" gate="G$1" x="114.3" y="66.04" rot="R270"/>
 <instance part="C4" gate="G$1" x="71.12" y="116.84" rot="R270"/>
 <instance part="C5" gate="G$1" x="71.12" y="106.68" rot="R270"/>
@@ -19214,7 +19216,6 @@ Source: www.cypressindustries.com</description>
 <instance part="GND19" gate="1" x="-78.74" y="220.98"/>
 <instance part="X2" gate="G$1" x="-53.34" y="231.14" rot="R270"/>
 <instance part="P+8" gate="VCC" x="-48.26" y="243.84"/>
-<instance part="GND20" gate="1" x="-63.5" y="220.98"/>
 </instances>
 <busses>
 </busses>
@@ -19296,8 +19297,14 @@ Source: www.cypressindustries.com</description>
 <segment>
 <pinref part="TMP102" gate="1" pin="2"/>
 <pinref part="GND15" gate="1" pin="GND"/>
-<wire x1="-68.58" y1="154.94" x2="-58.42" y2="154.94" width="0.1524" layer="91"/>
+<wire x1="-68.58" y1="154.94" x2="-60.96" y2="154.94" width="0.1524" layer="91"/>
+<wire x1="-60.96" y1="154.94" x2="-58.42" y2="154.94" width="0.1524" layer="91"/>
 <wire x1="-58.42" y1="154.94" x2="-58.42" y2="121.92" width="0.1524" layer="91"/>
+<pinref part="X2" gate="G$1" pin="4"/>
+<wire x1="-55.88" y1="236.22" x2="-60.96" y2="236.22" width="0.1524" layer="91"/>
+<wire x1="-60.96" y1="236.22" x2="-60.96" y2="154.94" width="0.1524" layer="91"/>
+<junction x="-60.96" y="154.94"/>
+<junction x="-55.88" y="236.22"/>
 </segment>
 <segment>
 <pinref part="TMP102" gate="1" pin="6"/>
@@ -19523,21 +19530,6 @@ Source: www.cypressindustries.com</description>
 <wire x1="149.86" y1="198.12" x2="134.62" y2="198.12" width="0.1524" layer="91"/>
 <pinref part="U$2" gate="G$1" pin="CA@3"/>
 <wire x1="15.24" y1="33.02" x2="15.24" y2="27.94" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$23" class="0">
-<segment>
-<wire x1="0" y1="7.62" x2="-33.02" y2="7.62" width="0.1524" layer="91"/>
-<pinref part="T9" gate="G$1" pin="C"/>
-<wire x1="-33.02" y1="7.62" x2="-48.26" y2="7.62" width="0.1524" layer="91"/>
-<wire x1="-48.26" y1="7.62" x2="-48.26" y2="63.5" width="0.1524" layer="91"/>
-<wire x1="2.54" y1="7.62" x2="2.54" y2="5.08" width="0.1524" layer="91"/>
-<wire x1="2.54" y1="5.08" x2="-33.02" y2="5.08" width="0.1524" layer="91"/>
-<wire x1="-33.02" y1="5.08" x2="-33.02" y2="7.62" width="0.1524" layer="91"/>
-<pinref part="T8" gate="G$1" pin="C"/>
-<wire x1="-33.02" y1="7.62" x2="-33.02" y2="63.5" width="0.1524" layer="91"/>
-<pinref part="U$2" gate="G$1" pin="B"/>
-<pinref part="U$2" gate="G$1" pin="A"/>
 </segment>
 </net>
 <net name="N$25" class="0">
@@ -19790,16 +19782,6 @@ Source: www.cypressindustries.com</description>
 <wire x1="60.96" y1="96.52" x2="78.74" y2="96.52" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$45" class="0">
-<segment>
-<wire x1="104.14" y1="172.72" x2="119.38" y2="172.72" width="0.1524" layer="91"/>
-<wire x1="119.38" y1="172.72" x2="119.38" y2="127" width="0.1524" layer="91"/>
-<wire x1="119.38" y1="127" x2="58.42" y2="127" width="0.1524" layer="91"/>
-<wire x1="58.42" y1="127" x2="58.42" y2="91.44" width="0.1524" layer="91"/>
-<pinref part="IC1" gate="G$1" pin="R1OUT"/>
-<wire x1="58.42" y1="91.44" x2="78.74" y2="91.44" width="0.1524" layer="91"/>
-</segment>
-</net>
 <net name="N$44" class="0">
 <segment>
 <pinref part="IC1" gate="G$1" pin="R1IN"/>
@@ -19816,12 +19798,32 @@ Source: www.cypressindustries.com</description>
 <wire x1="116.84" y1="96.52" x2="116.84" y2="73.66" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$46" class="0">
+<net name="N$47" class="0">
 <segment>
-<wire x1="-63.5" y1="220.98" x2="-63.5" y2="238.76" width="0.1524" layer="91"/>
-<pinref part="X2" gate="G$1" pin="4"/>
-<wire x1="-63.5" y1="238.76" x2="-55.88" y2="238.76" width="0.1524" layer="91"/>
-<wire x1="-55.88" y1="238.76" x2="-55.88" y2="236.22" width="0.1524" layer="91"/>
+<pinref part="U$2" gate="G$1" pin="B"/>
+<wire x1="2.54" y1="7.62" x2="2.54" y2="5.08" width="0.1524" layer="91"/>
+<pinref part="T8" gate="G$1" pin="C"/>
+<wire x1="2.54" y1="5.08" x2="-33.02" y2="5.08" width="0.1524" layer="91"/>
+<wire x1="-33.02" y1="5.08" x2="-33.02" y2="63.5" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$23" class="0">
+<segment>
+<pinref part="U$2" gate="G$1" pin="A"/>
+<pinref part="T9" gate="G$1" pin="C"/>
+<wire x1="0" y1="7.62" x2="-48.26" y2="7.62" width="0.1524" layer="91"/>
+<wire x1="-48.26" y1="7.62" x2="-48.26" y2="63.5" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$45" class="0">
+<segment>
+<pinref part="PIC16F877A" gate="A" pin="RC7/RX/DT"/>
+<wire x1="106.68" y1="172.72" x2="119.38" y2="172.72" width="0.1524" layer="91"/>
+<wire x1="119.38" y1="172.72" x2="119.38" y2="127" width="0.1524" layer="91"/>
+<wire x1="119.38" y1="127" x2="58.42" y2="127" width="0.1524" layer="91"/>
+<wire x1="58.42" y1="127" x2="58.42" y2="91.44" width="0.1524" layer="91"/>
+<pinref part="IC1" gate="G$1" pin="R1OUT"/>
+<wire x1="58.42" y1="91.44" x2="78.74" y2="91.44" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
