@@ -1,4 +1,4 @@
-    LIST    P = 16F877A
+    LIST    P = 16f877a
     INCLUDE <p16f877a.inc>
     INCLUDE <DEV_FAM.INC>	; PIC16 device specific definitions
 	INCLUDE <MATH16.INC>    ; PIC16 math library definitions
@@ -136,7 +136,54 @@ operation_send_data
     return
 
 operation_read_id
-    nop
+    ;send operation first - 2 - read sensor id
+    movlw   0x30
+    pagesel TXPOLL
+    call    TXPOLL
+    movlw   0x32
+    pagesel TXPOLL
+    call    TXPOLL
+    movlw   0x3B        ; - ; delimiter
+    pagesel TXPOLL
+    call    TXPOLL
+    ;send 10 bytes device id
+    movlw   0x30
+    pagesel TXPOLL
+    call    TXPOLL
+    movlw   0x31
+    pagesel TXPOLL
+    call    TXPOLL
+    movlw   0x32
+    pagesel TXPOLL
+    call    TXPOLL
+    movlw   0x33
+    pagesel TXPOLL
+    call    TXPOLL
+    movlw   0x34
+    pagesel TXPOLL
+    call    TXPOLL
+    movlw   0x35
+    pagesel TXPOLL
+    call    TXPOLL
+    movlw   0x36
+    pagesel TXPOLL
+    call    TXPOLL
+    movlw   0x37
+    pagesel TXPOLL
+    call    TXPOLL
+    movlw   0x38
+    pagesel TXPOLL
+    call    TXPOLL
+    movlw   0x39
+    pagesel TXPOLL
+    call    TXPOLL
+    movlw   0x3B        ; - ; delimiter
+    pagesel TXPOLL
+    call    TXPOLL
+
+    movlw   0x00
+    pagesel TXPOLL
+    call    TXPOLL
     return
 
 display_one     ;w is the decimal place in binary
@@ -435,7 +482,7 @@ send_address_and_register
     banksel     byte1
     movwf       byte1
 
-    pagesel read_data_i2cA
+    pagesel     read_data_i2cA
     read_data_i2cA
     send_read_ack_i2c
 
@@ -693,6 +740,10 @@ send_receive_display
     return
 
 send_real_data
+    ;send operation first == 1 (send data)
+    movlw   0x01
+    pagesel TXPOLL
+    call    TXPOLL
     ;send 4 bytes device id
     movlw   0x33
     pagesel TXPOLL
