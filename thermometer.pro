@@ -2,24 +2,24 @@ EAGLE AutoRouter Statistics:
 
 Job           : /Users/hbb/Documents/eagle/New_Folder/thermometer/thermometer.brd
 
-Start at      : 20:24:22 (2/21/15)
-End at        : 20:24:28 (2/21/15)
-Elapsed time  : 00:00:04
+Start at      : 16:22:20 (2/23/15)
+End at        : 16:22:23 (2/23/15)
+Elapsed time  : 00:00:02
 
 Signals       :    50   RoutingGrid: 19.685 mil  Layers: 2
-Connections   :    83   predefined:  22 ( 0 Vias )
+Connections   :    85   predefined:  0 ( 0 Vias )
 
-Router memory :   172304
+Router memory :   168128
 
 Passname          :    Busses     Route Optimize1 Optimize2 Optimize3 Optimize4
 
-Time per pass     :  00:00:01  00:00:00  00:00:01  00:00:01  00:00:00  00:00:01
+Time per pass     :  00:00:00  00:00:01  00:00:00  00:00:01  00:00:00  00:00:00
 Number of Ripups  :         0         0         0         0         0         0
-max. Level        :         0         0         0         0         0         0
+max. Level        :         0         1         0         0         0         0
 max. Total        :         0         0         0         0         0         0
 
-Routed            :         2        61        61        61        61        61
-Vias              :         0        73        34        23        19        19
-Resolution        :    28.9 %   100.0 %   100.0 %   100.0 %   100.0 %   100.0 %
+Routed            :        11        82        82        82        82        82
+Vias              :         0        95        22         8         8         7
+Resolution        :    12.9 %    96.5 %    96.5 %    96.5 %    96.5 %    96.5 %
 
-Final             : 100.0% finished
+Final             : 96.5% finished
