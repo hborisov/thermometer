@@ -406,7 +406,8 @@ send_address_and_register
     bsf         PORTC,3
     bsf         PORTC,4
 
-
+;this section is settign the resolution of tcn75 to 12bits
+;remove for tmp102
     pagesel i2c_wait_for_idle
     call    i2c_wait_for_idle
 
@@ -427,7 +428,7 @@ send_address_and_register
 
     pagesel i2c_stop
     call    i2c_stop
-
+;--end of section
 
     pagesel i2c_start
     call    i2c_start
