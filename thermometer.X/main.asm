@@ -6,6 +6,7 @@
 
     __CONFIG _CP_OFF & _FOSC_XT & _WDTE_OFF & _PWRTE_ON & _LVP_OFF
 
+
 ZERO    EQU D'0'
 ONE     EQU D'1'
 TWO     EQU D'2'
@@ -41,6 +42,8 @@ NINE    EQU D'9'
     d2
     d3
     operation
+    decimal_mask
+    SourceH
     ENDC
 
     ORG     H'0000'
@@ -193,6 +196,9 @@ display_one     ;w is the decimal place in binary
     movwf       PORTA
 
     movlw       b'00000110'
+    banksel     decimal_mask
+    iorwf       decimal_mask,0
+    banksel     PORTB
     movwf       PORTB
     return
 
@@ -202,7 +208,10 @@ display_two     ;w is 1,2,3 or 4 - the decimal place
     clrf        PORTB
     movwf       PORTA
 
+    banksel     decimal_mask
     movlw       b'01011011'
+    iorwf       decimal_mask,0
+    banksel     PORTB
     movwf       PORTB
     return
 
@@ -212,7 +221,10 @@ display_three     ;w is 1,2,3 or 4 - the decimal place
     clrf        PORTB
     movwf       PORTA
 
+    banksel     decimal_mask
     movlw       b'01001111'
+    iorwf       decimal_mask,0
+    banksel     PORTB
     movwf       PORTB
     return
 
@@ -222,7 +234,10 @@ display_four     ;w is the decimal place in binary
     clrf        PORTB
     movwf       PORTA
 
+    banksel     decimal_mask
     movlw       b'01100110'
+    iorwf       decimal_mask,0
+    banksel     PORTB
     movwf       PORTB
     return
 
@@ -232,7 +247,10 @@ display_five     ;w is the decimal place in binary
     clrf        PORTB
     movwf       PORTA
 
+    banksel     decimal_mask
     movlw       b'01101101'
+    iorwf       decimal_mask,0
+    banksel     PORTB
     movwf       PORTB
     return
 
@@ -242,7 +260,10 @@ display_six     ;w is the decimal place in binary
     clrf        PORTB
     movwf       PORTA
 
+    banksel     decimal_mask
     movlw       b'01111101'
+    iorwf       decimal_mask,0
+    banksel     PORTB
     movwf       PORTB
     return
 
@@ -252,7 +273,10 @@ display_seven     ;w is the decimal place in binary
     clrf        PORTB
     movwf       PORTA
 
+    banksel     decimal_mask
     movlw       b'00000111'
+    iorwf       decimal_mask,0
+    banksel     PORTB
     movwf       PORTB
     return
 
@@ -262,7 +286,10 @@ display_eight     ;w is the decimal place in binary
     clrf        PORTB
     movwf       PORTA
 
+    banksel     decimal_mask
     movlw       b'01111111'
+    iorwf       decimal_mask,0
+    banksel     PORTB
     movwf       PORTB
     return
 
@@ -273,7 +300,10 @@ display_nine     ;w is the decimal place in binary
     clrf        PORTB
     movwf       PORTA
 
-    movlw       b'11101111'
+    banksel     decimal_mask
+    movlw       b'01101111'
+    iorwf       decimal_mask,0
+    banksel     PORTB
     movwf       PORTB
     return
 
@@ -283,7 +313,10 @@ display_zero     ;w is the decimal place in binary
     clrf        PORTB
     movwf       PORTA
 
+    banksel     decimal_mask
     movlw       b'00111111'
+    iorwf       decimal_mask,0
+    banksel     PORTB
     movwf       PORTB
     return
 
@@ -293,7 +326,7 @@ display_c
     clrf        PORTB
     movwf       PORTA
 
-    movlw       b'11100011'
+    movlw       b'01100011'
     movwf       PORTB
     return
 
@@ -591,6 +624,10 @@ indication_loop
     pagesel delay_malko
     call    delay_malko
 
+    ;no decimal dot
+    banksel decimal_mask
+    movlw   b'00000000'
+    movwf   decimal_mask
 
     movlw   b'00000100'
     banksel decimal_place
@@ -603,6 +640,11 @@ indication_loop
     pagesel delay_malko
     call    delay_malko
 
+    ;decimal dot
+    banksel decimal_mask
+    movlw   b'10000000'
+    movwf   decimal_mask
+
     movlw   b'00000010'
     banksel decimal_place
     movwf   decimal_place
@@ -613,6 +655,11 @@ indication_loop
 
     pagesel delay_malko
     call    delay_malko
+
+    ;no decimal dot
+    banksel decimal_mask
+    movlw   b'00000000'
+    movwf   decimal_mask
 
     movlw   b'00000001'
     banksel decimal_place
@@ -630,17 +677,41 @@ indication_loop
 
     return
 
+
+
 send_receive_display
     pagesel send_address_and_register
     call send_address_and_register
 
+;; tcn75 workaround
+;; due to bad design there is a circuit bellow the sensor thus it reads roughly two degrees more
+;; the workaround is to subtract two degrees from the value
+
+    movlw   0x20
+    subwf   T_low_byte
+    movlw   0x00
+    banksel SourceH
+    movwf   SourceH
+    btfss   STATUS,C
+    incfsz  SourceH,W
+    subwf   T_high_byte
+
+;; end of workaround
+
+   
     clrf    AEXP
     clrf    AARGB2
 
+    banksel T_high_byte
     movfw   T_high_byte
+    banksel AARGB0
     movwf   AARGB0
+    banksel T_low_byte
     movfw   T_low_byte
+
+    banksel AARGB1
     movwf   AARGB1
+    ;movwf   AARGB1
     pagesel FLO1624
     call    FLO1624
 
